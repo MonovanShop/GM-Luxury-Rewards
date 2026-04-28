@@ -41,10 +41,22 @@ function CustomersList() {
     e.preventDefault();
     if (!name.trim() || !phone.trim()) return;
     setCreating(true);
-    const { error } = await supabase.from("customers").insert({
-      full_name: name.trim(), phone: phone.trim(),
-    });
+
+    const payload = { full_name: name.trim(), phone: phone.trim() };
+    let error: any = null;
+
+    // Reintenta hasta 3 veces si la BD está despertando (PGRST002 / 503)
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const res = await supabase.from("customers").insert(payload);
+      error = res.error;
+      const isWarmUp = error && (error.code === "PGRST002" || /schema cache/i.test(error.message));
+      if (!error || !isWarmUp) break;
+      if (attempt === 0) toast.loading("Despertando la base de datos...", { id: "warmup" });
+      await new Promise((r) => setTimeout(r, 1500));
+    }
+    toast.dismiss("warmup");
     setCreating(false);
+
     if (error) { toast.error(error.message); return; }
     toast.success("Cliente creado");
     setName(""); setPhone(""); setOpen(false);
