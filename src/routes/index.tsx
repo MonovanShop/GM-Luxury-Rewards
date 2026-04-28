@@ -1,4 +1,4 @@
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { memo, useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sparkles, ScanLine, KeyRound } from "lucide-react";
@@ -11,7 +11,6 @@ export const Route = createFileRoute("/")({
 const STORAGE_KEY = "gm_luxury_card_code";
 
 function Landing() {
-  const router = useRouter();
   const [hasSession, setHasSession] = useState<string | null>(null);
 
   useEffect(() => {
@@ -25,11 +24,11 @@ function Landing() {
     const trimmed = c.trim().toUpperCase();
     if (!trimmed) return;
     if (trimmed === "ADM" || trimmed === "ADMIN") {
-      router.navigate({ to: "/admin/login" });
+      window.location.assign("/admin/login");
       return;
     }
-    router.navigate({ to: "/loyalty/$code", params: { code: trimmed } });
-  }, [router]);
+    window.location.assign(`/loyalty/${encodeURIComponent(trimmed)}`);
+  }, []);
 
   const clearSession = useCallback(() => {
     localStorage.removeItem(STORAGE_KEY);
@@ -71,21 +70,20 @@ const AccessCard = memo(function AccessCard({
 }: { hasSession: string | null; onOpen: (c: string) => void; onClearSession: () => void }) {
   return (
     <div className="mt-12 max-w-md mx-auto glass rounded-2xl p-6 sm:p-8 gold-border shadow-luxury">
-      {hasSession ? (
-        <>
+      <CodeForm onOpen={onOpen} />
+      {hasSession && (
+        <div className="mt-6 border-t border-gold/20 pt-5">
           <p className="text-xs tracking-[0.3em] text-muted-foreground mb-2">SESIÓN GUARDADA</p>
-          <p className="font-display text-2xl text-gradient-gold mb-4">Bienvenido de vuelta</p>
+          <p className="font-display text-2xl text-gradient-gold mb-4">También puedes volver directo</p>
           <Button onClick={() => onOpen(hasSession)}
             className="w-full bg-gradient-gold text-background font-medium">
             Abrir mi tarjeta ({hasSession})
           </Button>
           <button onClick={onClearSession}
             className="text-xs text-muted-foreground hover:text-gold mt-3">
-            Usar otra tarjeta
+            Borrar sesión guardada
           </button>
-        </>
-      ) : (
-        <CodeForm onOpen={onOpen} />
+        </div>
       )}
     </div>
   );
