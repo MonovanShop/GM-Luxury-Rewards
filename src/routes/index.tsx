@@ -70,7 +70,7 @@ const AccessCard = memo(function AccessCard({
 }: { hasSession: string | null; onOpen: (c: string) => void; onClearSession: () => void }) {
   return (
     <div className="mt-12 max-w-md mx-auto glass rounded-2xl p-6 sm:p-8 gold-border shadow-luxury">
-      <CodeForm onOpen={onOpen} />
+      <CodeEntryForm />
       {hasSession && (
         <div className="mt-6 border-t border-gold/20 pt-5">
           <p className="text-xs tracking-[0.3em] text-muted-foreground mb-2">SESIÓN GUARDADA</p>
@@ -89,14 +89,7 @@ const AccessCard = memo(function AccessCard({
   );
 });
 
-function CodeForm({ onOpen }: { onOpen: (c: string) => void }) {
-  const submitCode = useCallback((event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const form = event.currentTarget;
-    const data = new FormData(form);
-    onOpen(String(data.get("code") ?? ""));
-  }, [onOpen]);
-
+function CodeEntryForm() {
   return (
     <>
       <div className="flex items-center justify-center gap-2 text-gold mb-3">
@@ -106,20 +99,22 @@ function CodeForm({ onOpen }: { onOpen: (c: string) => void }) {
       <p className="text-sm text-muted-foreground mb-5">
         Escanea tu código QR o ingresa el código de tu tarjeta.
       </p>
-      <form onSubmit={submitCode} className="flex gap-2">
+      <form action="/loyalty" method="get" className="flex gap-2" autoComplete="off">
         <div className="relative flex-1">
           <KeyRound className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
             type="text"
             name="code"
+            id="customer-code"
             placeholder="CÓDIGO"
-            className="flex h-11 w-full rounded-md border border-input bg-background/70 px-3 py-2 pl-9 text-base text-foreground shadow-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-gold focus:ring-1 focus:ring-gold font-mono tracking-widest"
+            className="block h-12 w-full rounded-md border border-input bg-background px-3 py-2 pl-9 text-base text-foreground shadow-sm outline-none placeholder:text-muted-foreground focus:border-gold focus:ring-1 focus:ring-gold font-mono"
             maxLength={10}
             autoComplete="off"
             autoCorrect="off"
             autoCapitalize="off"
             spellCheck={false}
             enterKeyHint="go"
+            aria-label="Código de tarjeta"
           />
         </div>
         <Button type="submit" className="bg-gradient-gold text-background">Abrir</Button>
