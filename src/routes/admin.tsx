@@ -1,52 +1,71 @@
-import { createFileRoute, Link, Outlet, redirect, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { LayoutDashboard, Users, LogOut, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
-  beforeLoad: async () => {
-    if (typeof window === "undefined") return;
-    const { data } = await supabase.auth.getSession();
-    if (!data.session) throw redirect({ to: "/admin/login" });
-  },
   component: AdminLayout,
 });
 
+type AuthState = "loading" | "guest" | "no_role" | "admin";
+
 function AdminLayout() {
   const router = useRouter();
+  const [state, setState] = useState<AuthState>("loading");
   const [email, setEmail] = useState<string | null>(null);
-  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
 
   useEffect(() => {
-    const init = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (!data.session) {
-        router.navigate({ to: "/admin/login" });
+    let cancelled = false;
+
+    const check = async (session: Awaited<ReturnType<typeof supabase.auth.getSession>>["data"]["session"]) => {
+      if (!session) {
+        if (!cancelled) setState("guest");
         return;
       }
-      setEmail(data.session.user.email ?? null);
-      const { data: roles } = await supabase
+      if (!cancelled) setEmail(session.user.email ?? null);
+      const { data: role } = await supabase
         .from("user_roles")
         .select("role")
-        .eq("user_id", data.session.user.id)
+        .eq("user_id", session.user.id)
         .eq("role", "admin")
         .maybeSingle();
-      setIsAdmin(!!roles);
+      if (cancelled) return;
+      setState(role ? "admin" : "no_role");
     };
-    init();
+
+    supabase.auth.getSession().then(({ data }) => check(data.session));
+
     const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
-      if (!session) router.navigate({ to: "/admin/login" });
+      check(session);
     });
-    return () => sub.subscription.unsubscribe();
-  }, [router]);
+
+    return () => { cancelled = true; sub.subscription.unsubscribe(); };
+  }, []);
+
+  useEffect(() => {
+    if (state === "guest") {
+      router.navigate({ to: "/admin/login" });
+    }
+  }, [state, router]);
 
   const logout = async () => {
     await supabase.auth.signOut();
     router.navigate({ to: "/admin/login" });
   };
 
-  if (isAdmin === false) {
+  if (state === "loading" || state === "guest") {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Sparkles className="w-8 h-8 text-gold mx-auto animate-pulse" />
+          <p className="text-xs tracking-[0.3em] text-muted-foreground mt-4">CARGANDO</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (state === "no_role") {
     return (
       <div className="min-h-screen flex items-center justify-center p-6">
         <div className="glass rounded-2xl p-8 max-w-md text-center gold-border">
