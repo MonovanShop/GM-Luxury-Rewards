@@ -34,10 +34,14 @@ export const Route = createRootRoute({
       { name: "description", content: "Programa de fidelidad premium para clientes de GM Luxury / Luxury Brands Hub." },
       { name: "author", content: "GM Luxury" },
       { property: "og:title", content: "GM Luxury Rewards" },
-      { property: "og:description", content: "Tu fidelidad merece beneficios exclusivos." },
+      { property: "og:description", content: "Programa de fidelidad premium para clientes de GM Luxury / Luxury Brands Hub." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "GM Luxury Rewards" },
+      { name: "twitter:description", content: "Programa de fidelidad premium para clientes de GM Luxury / Luxury Brands Hub." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/fa250707-507c-492b-a860-45e9ac42c021/id-preview-60dec45a--a06ea8bd-8f01-4eb9-9589-e502f82ac368.lovable.app-1777342627195.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/fa250707-507c-492b-a860-45e9ac42c021/id-preview-60dec45a--a06ea8bd-8f01-4eb9-9589-e502f82ac368.lovable.app-1777342627195.png" },
     ],
     links: [
       {
