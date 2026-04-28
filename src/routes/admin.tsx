@@ -17,13 +17,18 @@ function AdminLayout() {
 
   useEffect(() => {
     let cancelled = false;
+    let lastUserId: string | null = null;
 
     const check = async (session: Awaited<ReturnType<typeof supabase.auth.getSession>>["data"]["session"]) => {
+      if (cancelled) return;
       if (!session) {
-        if (!cancelled) setState("guest");
+        lastUserId = null;
+        setState("guest");
         return;
       }
-      if (!cancelled) setEmail(session.user.email ?? null);
+      if (session.user.id === lastUserId) return; // evita revalidar lo mismo
+      lastUserId = session.user.id;
+      setEmail(session.user.email ?? null);
       const { data: role } = await supabase
         .from("user_roles")
         .select("role")
@@ -34,11 +39,12 @@ function AdminLayout() {
       setState(role ? "admin" : "no_role");
     };
 
-    supabase.auth.getSession().then(({ data }) => check(data.session));
-
     const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
       check(session);
     });
+
+    // fallback por si onAuthStateChange tarda
+    supabase.auth.getSession().then(({ data }) => check(data.session));
 
     return () => { cancelled = true; sub.subscription.unsubscribe(); };
   }, []);
