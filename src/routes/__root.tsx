@@ -1,47 +1,5 @@
-import { Outlet, Link, createRootRoute, HeadContent, Scripts, useRouter } from "@tanstack/react-router";
-import { useEffect, useRef } from "react";
+import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
-
-function SecretAdminTrigger() {
-  const router = useRouter();
-  const bufferRef = useRef("");
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Ignorar si el usuario está escribiendo en un input/textarea
-      const target = e.target as HTMLElement | null;
-      if (target) {
-        const tag = target.tagName;
-        if (tag === "INPUT" || tag === "TEXTAREA" || target.isContentEditable) {
-          return;
-        }
-      }
-
-      if (e.key.length !== 1) return;
-
-      bufferRef.current = (bufferRef.current + e.key).toUpperCase().slice(-3);
-
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      timeoutRef.current = setTimeout(() => {
-        bufferRef.current = "";
-      }, 1500);
-
-      if (bufferRef.current === "ADM") {
-        bufferRef.current = "";
-        router.navigate({ to: "/admin/login" });
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, [router]);
-
-  return null;
-}
 
 import appCss from "../styles.css?url";
 
@@ -116,7 +74,6 @@ function RootComponent() {
     <>
       <Outlet />
       <Toaster position="top-center" />
-      <SecretAdminTrigger />
     </>
   );
 }
