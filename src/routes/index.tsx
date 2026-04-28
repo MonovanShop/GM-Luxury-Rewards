@@ -24,8 +24,14 @@ function Landing() {
   }, []);
 
   const open = (c: string) => {
-    if (!c.trim()) return;
-    router.navigate({ to: "/loyalty/$code", params: { code: c.trim().toUpperCase() } });
+    const trimmed = c.trim().toUpperCase();
+    if (!trimmed) return;
+    // Acceso oculto al panel admin
+    if (trimmed === "ADM" || trimmed === "ADMIN") {
+      router.navigate({ to: "/admin/login" });
+      return;
+    }
+    router.navigate({ to: "/loyalty/$code", params: { code: trimmed } });
   };
 
   return (
