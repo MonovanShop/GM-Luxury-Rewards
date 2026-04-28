@@ -116,6 +116,7 @@ function RootComponent() {
     <>
       <Outlet />
       <Toaster position="top-center" />
+      <SecretAdminTrigger />
     </>
   );
 }
