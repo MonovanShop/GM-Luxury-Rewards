@@ -1,7 +1,6 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Sparkles, ScanLine, KeyRound } from "lucide-react";
 import { TIER_INFO } from "@/lib/loyalty";
 
@@ -93,7 +92,12 @@ const AccessCard = memo(function AccessCard({
 });
 
 function CodeForm({ onOpen }: { onOpen: (c: string) => void }) {
-  const [code, setCode] = useState("");
+  const submitCode = useCallback((event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    onOpen(String(data.get("code") ?? ""));
+  }, [onOpen]);
 
   return (
     <>
@@ -104,19 +108,20 @@ function CodeForm({ onOpen }: { onOpen: (c: string) => void }) {
       <p className="text-sm text-muted-foreground mb-5">
         Escanea tu código QR o ingresa el código de tu tarjeta.
       </p>
-      <form onSubmit={e => { e.preventDefault(); onOpen(code); }} className="flex gap-2">
+      <form onSubmit={submitCode} className="flex gap-2">
         <div className="relative flex-1">
           <KeyRound className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <Input
+          <input
+            type="text"
             name="code"
             placeholder="CÓDIGO"
-            value={code}
-            onChange={e => setCode(e.target.value.toUpperCase())}
-            className="pl-9 font-mono tracking-widest"
+            className="flex h-11 w-full rounded-md border border-input bg-background/70 px-3 py-2 pl-9 text-base text-foreground shadow-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-gold focus:ring-1 focus:ring-gold font-mono tracking-widest"
             maxLength={10}
+            autoComplete="off"
             autoCorrect="off"
+            autoCapitalize="off"
             spellCheck={false}
-            inputMode="text"
+            enterKeyHint="go"
           />
         </div>
         <Button type="submit" className="bg-gradient-gold text-background">Abrir</Button>
