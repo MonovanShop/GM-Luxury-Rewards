@@ -1,4 +1,4 @@
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { LoyaltyCard } from "@/components/loyalty/LoyaltyCard";
@@ -20,7 +20,6 @@ type Purchase = { id: string; description: string | null; created_at: string };
 
 function CustomerView() {
   const { code } = Route.useParams();
-  const router = useRouter();
   const [customer, setCustomer] = useState<CustomerData | null>(null);
   const [purchases, setPurchases] = useState<Purchase[]>([]);
   const [loading, setLoading] = useState(true);
@@ -47,7 +46,7 @@ function CustomerView() {
 
   const logout = () => {
     try { localStorage.removeItem(STORAGE_KEY); } catch {}
-    router.navigate({ to: "/" });
+    window.location.assign("/");
   };
 
   if (loading) {
@@ -62,7 +61,7 @@ function CustomerView() {
           <p className="text-muted-foreground text-sm mb-6">
             El código <span className="font-mono">{code}</span> no corresponde a ninguna tarjeta activa.
           </p>
-          <Button onClick={() => router.navigate({ to: "/" })} variant="outline">Volver al inicio</Button>
+          <Button onClick={() => window.location.assign("/")} variant="outline">Volver al inicio</Button>
         </div>
       </div>
     );
