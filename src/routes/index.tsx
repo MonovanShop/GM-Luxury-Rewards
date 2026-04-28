@@ -93,7 +93,7 @@ const AccessCard = memo(function AccessCard({
 });
 
 function CodeForm({ onOpen }: { onOpen: (c: string) => void }) {
-  const codeRef = useRef<HTMLInputElement>(null);
+  const [code, setCode] = useState("");
 
   return (
     <>
@@ -104,12 +104,20 @@ function CodeForm({ onOpen }: { onOpen: (c: string) => void }) {
       <p className="text-sm text-muted-foreground mb-5">
         Escanea tu código QR o ingresa el código de tu tarjeta.
       </p>
-      <form onSubmit={e => { e.preventDefault(); onOpen(codeRef.current?.value ?? ""); }} className="flex gap-2">
+      <form onSubmit={e => { e.preventDefault(); onOpen(code); }} className="flex gap-2">
         <div className="relative flex-1">
           <KeyRound className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <Input ref={codeRef} name="code" placeholder="CÓDIGO"
-            className="pl-9 font-mono tracking-widest uppercase" maxLength={10}
-            autoCapitalize="characters" autoCorrect="off" spellCheck={false} inputMode="text" />
+          <Input
+            name="code"
+            placeholder="CÓDIGO"
+            value={code}
+            onChange={e => setCode(e.target.value.toUpperCase())}
+            className="pl-9 font-mono tracking-widest"
+            maxLength={10}
+            autoCorrect="off"
+            spellCheck={false}
+            inputMode="text"
+          />
         </div>
         <Button type="submit" className="bg-gradient-gold text-background">Abrir</Button>
       </form>
