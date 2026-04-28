@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as LoyaltyCodeRouteImport } from './routes/loyalty.$code'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminCustomersIndexRouteImport } from './routes/admin.customers.index'
 import { Route as AdminCustomersIdRouteImport } from './routes/admin.customers.$id'
@@ -30,6 +31,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRoute,
+} as any)
+const LoyaltyCodeRoute = LoyaltyCodeRouteImport.update({
+  id: '/loyalty/$code',
+  path: '/loyalty/$code',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/login',
@@ -51,6 +57,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
+  '/loyalty/$code': typeof LoyaltyCodeRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/customers/$id': typeof AdminCustomersIdRoute
   '/admin/customers/': typeof AdminCustomersIndexRoute
@@ -58,6 +65,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin/login': typeof AdminLoginRoute
+  '/loyalty/$code': typeof LoyaltyCodeRoute
   '/admin': typeof AdminIndexRoute
   '/admin/customers/$id': typeof AdminCustomersIdRoute
   '/admin/customers': typeof AdminCustomersIndexRoute
@@ -67,6 +75,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
+  '/loyalty/$code': typeof LoyaltyCodeRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/customers/$id': typeof AdminCustomersIdRoute
   '/admin/customers/': typeof AdminCustomersIndexRoute
@@ -77,6 +86,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/admin/login'
+    | '/loyalty/$code'
     | '/admin/'
     | '/admin/customers/$id'
     | '/admin/customers/'
@@ -84,6 +94,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/admin/login'
+    | '/loyalty/$code'
     | '/admin'
     | '/admin/customers/$id'
     | '/admin/customers'
@@ -92,6 +103,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/admin/login'
+    | '/loyalty/$code'
     | '/admin/'
     | '/admin/customers/$id'
     | '/admin/customers/'
@@ -100,6 +112,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
+  LoyaltyCodeRoute: typeof LoyaltyCodeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -124,6 +137,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/loyalty/$code': {
+      id: '/loyalty/$code'
+      path: '/loyalty/$code'
+      fullPath: '/loyalty/$code'
+      preLoaderRoute: typeof LoyaltyCodeRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin/login': {
       id: '/admin/login'
@@ -168,7 +188,17 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
+  LoyaltyCodeRoute: LoyaltyCodeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
