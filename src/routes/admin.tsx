@@ -1,4 +1,4 @@
-import { createFileRoute, Link, Outlet, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useLocation, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,8 @@ type AuthState = "loading" | "guest" | "no_role" | "admin";
 
 function AdminLayout() {
   const router = useRouter();
+  const location = useLocation();
+  const isLoginRoute = location.pathname === "/admin/login";
   const [state, setState] = useState<AuthState>("loading");
   const [email, setEmail] = useState<string | null>(null);
 
@@ -50,15 +52,19 @@ function AdminLayout() {
   }, []);
 
   useEffect(() => {
-    if (state === "guest") {
+    if (state === "guest" && !isLoginRoute) {
       router.navigate({ to: "/admin/login" });
     }
-  }, [state, router]);
+  }, [state, router, isLoginRoute]);
 
   const logout = async () => {
     await supabase.auth.signOut();
     router.navigate({ to: "/admin/login" });
   };
+
+  if (isLoginRoute) {
+    return <Outlet />;
+  }
 
   if (state === "loading" || state === "guest") {
     return (
