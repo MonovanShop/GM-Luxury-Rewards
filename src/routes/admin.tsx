@@ -19,17 +19,14 @@ function AdminLayout() {
 
   useEffect(() => {
     let cancelled = false;
-    let lastUserId: string | null = null;
 
     const check = async (session: Awaited<ReturnType<typeof supabase.auth.getSession>>["data"]["session"]) => {
       if (cancelled) return;
       if (!session) {
-        lastUserId = null;
+        setEmail(null);
         setState("guest");
         return;
       }
-      if (session.user.id === lastUserId) return; // evita revalidar lo mismo
-      lastUserId = session.user.id;
       setEmail(session.user.email ?? null);
       const { data: role } = await supabase
         .from("user_roles")
@@ -45,7 +42,6 @@ function AdminLayout() {
       check(session);
     });
 
-    // fallback por si onAuthStateChange tarda
     supabase.auth.getSession().then(({ data }) => check(data.session));
 
     return () => { cancelled = true; sub.subscription.unsubscribe(); };
@@ -55,10 +51,15 @@ function AdminLayout() {
     if (state === "guest" && !isLoginRoute) {
       router.navigate({ to: "/admin/login" });
     }
+    // Si ya hay sesión válida y estamos en login, redirigir al panel
+    if ((state === "admin" || state === "no_role") && isLoginRoute) {
+      router.navigate({ to: "/admin" });
+    }
   }, [state, router, isLoginRoute]);
 
   const logout = async () => {
     await supabase.auth.signOut();
+    setState("guest");
     router.navigate({ to: "/admin/login" });
   };
 
