@@ -43,24 +43,39 @@ function CustomersList() {
     setCreating(true);
 
     const payload = { full_name: name.trim(), phone: phone.trim() };
-    let error: any = null;
+    const { data: sessionData } = await supabase.auth.getSession();
+    const token = sessionData.session?.access_token;
 
-    // Reintenta hasta 3 veces si la BD está despertando (PGRST002 / 503)
-    for (let attempt = 0; attempt < 3; attempt++) {
-      const res = await supabase.from("customers").insert(payload);
-      error = res.error;
-      const isWarmUp = error && (error.code === "PGRST002" || /schema cache/i.test(error.message));
-      if (!error || !isWarmUp) break;
-      if (attempt === 0) toast.loading("Despertando la base de datos...", { id: "warmup" });
-      await new Promise((r) => setTimeout(r, 1500));
+    if (!token) {
+      setCreating(false);
+      toast.error("Vuelve a iniciar sesión para crear clientes.");
+      return;
     }
-    toast.dismiss("warmup");
-    setCreating(false);
 
-    if (error) { toast.error(error.message); return; }
-    toast.success("Cliente creado");
-    setName(""); setPhone(""); setOpen(false);
-    load();
+    try {
+      const response = await fetch("/api/admin/create-customer", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+      const result = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        toast.error(result.error ?? "No se pudo registrar el cliente.");
+        return;
+      }
+
+      toast.success(`Cliente creado · Tarjeta ${result.customer.code}`);
+      setName(""); setPhone(""); setOpen(false);
+      setCustomers((current) => [result.customer, ...current]);
+    } catch {
+      toast.error("No se pudo conectar con el backend. Intenta de nuevo.");
+    } finally {
+      setCreating(false);
+    }
   };
 
   const filtered = customers.filter(c => {

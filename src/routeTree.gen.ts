@@ -15,6 +15,7 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as LoyaltyCodeRouteImport } from './routes/loyalty.$code'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminCustomersIndexRouteImport } from './routes/admin.customers.index'
+import { Route as ApiAdminCreateCustomerRouteImport } from './routes/api.admin.create-customer'
 import { Route as AdminCustomersIdRouteImport } from './routes/admin.customers.$id'
 
 const AdminRoute = AdminRouteImport.update({
@@ -47,6 +48,11 @@ const AdminCustomersIndexRoute = AdminCustomersIndexRouteImport.update({
   path: '/customers/',
   getParentRoute: () => AdminRoute,
 } as any)
+const ApiAdminCreateCustomerRoute = ApiAdminCreateCustomerRouteImport.update({
+  id: '/api/admin/create-customer',
+  path: '/api/admin/create-customer',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminCustomersIdRoute = AdminCustomersIdRouteImport.update({
   id: '/customers/$id',
   path: '/customers/$id',
@@ -60,6 +66,7 @@ export interface FileRoutesByFullPath {
   '/loyalty/$code': typeof LoyaltyCodeRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/customers/$id': typeof AdminCustomersIdRoute
+  '/api/admin/create-customer': typeof ApiAdminCreateCustomerRoute
   '/admin/customers/': typeof AdminCustomersIndexRoute
 }
 export interface FileRoutesByTo {
@@ -68,6 +75,7 @@ export interface FileRoutesByTo {
   '/loyalty/$code': typeof LoyaltyCodeRoute
   '/admin': typeof AdminIndexRoute
   '/admin/customers/$id': typeof AdminCustomersIdRoute
+  '/api/admin/create-customer': typeof ApiAdminCreateCustomerRoute
   '/admin/customers': typeof AdminCustomersIndexRoute
 }
 export interface FileRoutesById {
@@ -78,6 +86,7 @@ export interface FileRoutesById {
   '/loyalty/$code': typeof LoyaltyCodeRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/customers/$id': typeof AdminCustomersIdRoute
+  '/api/admin/create-customer': typeof ApiAdminCreateCustomerRoute
   '/admin/customers/': typeof AdminCustomersIndexRoute
 }
 export interface FileRouteTypes {
@@ -89,6 +98,7 @@ export interface FileRouteTypes {
     | '/loyalty/$code'
     | '/admin/'
     | '/admin/customers/$id'
+    | '/api/admin/create-customer'
     | '/admin/customers/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
     | '/loyalty/$code'
     | '/admin'
     | '/admin/customers/$id'
+    | '/api/admin/create-customer'
     | '/admin/customers'
   id:
     | '__root__'
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '/loyalty/$code'
     | '/admin/'
     | '/admin/customers/$id'
+    | '/api/admin/create-customer'
     | '/admin/customers/'
   fileRoutesById: FileRoutesById
 }
@@ -113,6 +125,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
   LoyaltyCodeRoute: typeof LoyaltyCodeRoute
+  ApiAdminCreateCustomerRoute: typeof ApiAdminCreateCustomerRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -159,6 +172,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCustomersIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/api/admin/create-customer': {
+      id: '/api/admin/create-customer'
+      path: '/api/admin/create-customer'
+      fullPath: '/api/admin/create-customer'
+      preLoaderRoute: typeof ApiAdminCreateCustomerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/customers/$id': {
       id: '/admin/customers/$id'
       path: '/customers/$id'
@@ -189,7 +209,17 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
   LoyaltyCodeRoute: LoyaltyCodeRoute,
+  ApiAdminCreateCustomerRoute: ApiAdminCreateCustomerRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
