@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as DiagRouteImport } from './routes/diag'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
@@ -18,6 +19,11 @@ import { Route as AdminCustomersIndexRouteImport } from './routes/admin.customer
 import { Route as ApiAdminCreateCustomerRouteImport } from './routes/api.admin.create-customer'
 import { Route as AdminCustomersIdRouteImport } from './routes/admin.customers.$id'
 
+const DiagRoute = DiagRouteImport.update({
+  id: '/diag',
+  path: '/diag',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -62,6 +68,7 @@ const AdminCustomersIdRoute = AdminCustomersIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/diag': typeof DiagRoute
   '/admin/login': typeof AdminLoginRoute
   '/loyalty/$code': typeof LoyaltyCodeRoute
   '/admin/': typeof AdminIndexRoute
@@ -71,6 +78,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/diag': typeof DiagRoute
   '/admin/login': typeof AdminLoginRoute
   '/loyalty/$code': typeof LoyaltyCodeRoute
   '/admin': typeof AdminIndexRoute
@@ -82,6 +90,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/diag': typeof DiagRoute
   '/admin/login': typeof AdminLoginRoute
   '/loyalty/$code': typeof LoyaltyCodeRoute
   '/admin/': typeof AdminIndexRoute
@@ -94,6 +103,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/diag'
     | '/admin/login'
     | '/loyalty/$code'
     | '/admin/'
@@ -103,6 +113,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/diag'
     | '/admin/login'
     | '/loyalty/$code'
     | '/admin'
@@ -113,6 +124,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/diag'
     | '/admin/login'
     | '/loyalty/$code'
     | '/admin/'
@@ -124,12 +136,20 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
+  DiagRoute: typeof DiagRoute
   LoyaltyCodeRoute: typeof LoyaltyCodeRoute
   ApiAdminCreateCustomerRoute: typeof ApiAdminCreateCustomerRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/diag': {
+      id: '/diag'
+      path: '/diag'
+      fullPath: '/diag'
+      preLoaderRoute: typeof DiagRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -208,6 +228,7 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
+  DiagRoute: DiagRoute,
   LoyaltyCodeRoute: LoyaltyCodeRoute,
   ApiAdminCreateCustomerRoute: ApiAdminCreateCustomerRoute,
 }
