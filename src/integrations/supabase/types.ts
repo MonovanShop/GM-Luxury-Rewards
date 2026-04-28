@@ -14,16 +14,115 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      customers: {
+        Row: {
+          code: string
+          created_at: string
+          full_name: string
+          id: string
+          last_purchase_at: string | null
+          notes: string | null
+          phone: string
+          purchase_count: number
+          tier: Database["public"]["Enums"]["loyalty_tier"]
+          updated_at: string
+        }
+        Insert: {
+          code?: string
+          created_at?: string
+          full_name: string
+          id?: string
+          last_purchase_at?: string | null
+          notes?: string | null
+          phone: string
+          purchase_count?: number
+          tier?: Database["public"]["Enums"]["loyalty_tier"]
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          full_name?: string
+          id?: string
+          last_purchase_at?: string | null
+          notes?: string | null
+          phone?: string
+          purchase_count?: number
+          tier?: Database["public"]["Enums"]["loyalty_tier"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      purchases: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          customer_id: string
+          description: string | null
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          customer_id: string
+          description?: string | null
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string
+          description?: string | null
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchases_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_customer_code: { Args: never; Returns: string }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin"
+      loyalty_tier: "classic" | "elite" | "black"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +249,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin"],
+      loyalty_tier: ["classic", "elite", "black"],
+    },
   },
 } as const
