@@ -1,5 +1,5 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { memo, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sparkles, ScanLine, KeyRound } from "lucide-react";
@@ -22,7 +22,7 @@ function Landing() {
     } catch {}
   }, []);
 
-  const open = (c: string) => {
+  const open = useCallback((c: string) => {
     const trimmed = c.trim().toUpperCase();
     if (!trimmed) return;
     if (trimmed === "ADM" || trimmed === "ADMIN") {
@@ -30,12 +30,12 @@ function Landing() {
       return;
     }
     router.navigate({ to: "/loyalty/$code", params: { code: trimmed } });
-  };
+  }, [router]);
 
-  const clearSession = () => {
+  const clearSession = useCallback(() => {
     localStorage.removeItem(STORAGE_KEY);
     setHasSession(null);
-  };
+  }, []);
 
   return (
     <div className="min-h-screen">
@@ -93,7 +93,8 @@ const AccessCard = memo(function AccessCard({
 });
 
 function CodeForm({ onOpen }: { onOpen: (c: string) => void }) {
-  const [code, setCode] = useState("");
+  const codeRef = useRef<HTMLInputElement>(null);
+
   return (
     <>
       <div className="flex items-center justify-center gap-2 text-gold mb-3">
@@ -103,11 +104,12 @@ function CodeForm({ onOpen }: { onOpen: (c: string) => void }) {
       <p className="text-sm text-muted-foreground mb-5">
         Escanea tu código QR o ingresa el código de tu tarjeta.
       </p>
-      <form onSubmit={e => { e.preventDefault(); onOpen(code); }} className="flex gap-2">
+      <form onSubmit={e => { e.preventDefault(); onOpen(codeRef.current?.value ?? ""); }} className="flex gap-2">
         <div className="relative flex-1">
           <KeyRound className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <Input value={code} onChange={e => setCode(e.target.value.toUpperCase())}
-            placeholder="CÓDIGO" className="pl-9 font-mono tracking-widest uppercase" maxLength={10} />
+          <Input ref={codeRef} name="code" placeholder="CÓDIGO"
+            className="pl-9 font-mono tracking-widest uppercase" maxLength={10}
+            autoCapitalize="characters" autoCorrect="off" spellCheck={false} inputMode="text" />
         </div>
         <Button type="submit" className="bg-gradient-gold text-background">Abrir</Button>
       </form>
