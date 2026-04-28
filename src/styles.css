@@ -140,15 +140,8 @@
   .shadow-gold-glow { box-shadow: var(--shadow-gold-glow); }
 
   .glass {
-    background: oklch(0.20 0.008 60 / 0.85);
+    background: oklch(0.20 0.008 60 / 0.88);
     border: 1px solid oklch(0.78 0.12 85 / 0.15);
-  }
-  @media (min-width: 768px) {
-    .glass {
-      background: oklch(0.20 0.008 60 / 0.7);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-    }
   }
 
   .tier-classic-bg { background: var(--tier-classic); }
