@@ -2,7 +2,6 @@ import { createFileRoute, useRouter, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Sparkles } from "lucide-react";
@@ -14,8 +13,6 @@ export const Route = createFileRoute("/admin/login")({
 function LoginPage() {
   const router = useRouter();
   const [mode, setMode] = useState<"login" | "signup">("login");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -26,6 +23,10 @@ function LoginPage() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const form = e.currentTarget as HTMLFormElement;
+    const data = new FormData(form);
+    const email = String(data.get("email") ?? "").trim();
+    const password = String(data.get("password") ?? "");
     setLoading(true);
     try {
       if (mode === "signup") {
@@ -72,14 +73,27 @@ function LoginPage() {
           <form onSubmit={submit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Correo</Label>
-              <Input id="email" type="email" required value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@gmluxury.com" />
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                autoComplete="email"
+                placeholder="admin@gmluxury.com"
+                className="flex h-11 w-full rounded-md border border-input bg-background/70 px-3 py-2 text-base text-foreground shadow-sm outline-none placeholder:text-muted-foreground focus:border-gold focus:ring-1 focus:ring-gold"
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Contraseña</Label>
-              <Input id="password" type="password" required minLength={6} value={password}
-                onChange={(e) => setPassword(e.target.value)} />
+              <input
+                id="password"
+                name="password"
+                type="password"
+                required
+                minLength={6}
+                autoComplete={mode === "login" ? "current-password" : "new-password"}
+                className="flex h-11 w-full rounded-md border border-input bg-background/70 px-3 py-2 text-base text-foreground shadow-sm outline-none placeholder:text-muted-foreground focus:border-gold focus:ring-1 focus:ring-gold"
+              />
             </div>
             <Button type="submit" disabled={loading} className="w-full bg-gradient-gold text-background hover:opacity-90 font-medium">
               {loading ? "Procesando..." : mode === "login" ? "Entrar" : "Registrarme"}
