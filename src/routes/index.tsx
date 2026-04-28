@@ -13,7 +13,6 @@ const STORAGE_KEY = "gm_luxury_card_code";
 
 function Landing() {
   const router = useRouter();
-  const [code, setCode] = useState("");
   const [hasSession, setHasSession] = useState<string | null>(null);
 
   useEffect(() => {
@@ -26,7 +25,6 @@ function Landing() {
   const open = (c: string) => {
     const trimmed = c.trim().toUpperCase();
     if (!trimmed) return;
-    // Acceso oculto al panel admin
     if (trimmed === "ADM" || trimmed === "ADMIN") {
       router.navigate({ to: "/admin/login" });
       return;
@@ -34,9 +32,13 @@ function Landing() {
     router.navigate({ to: "/loyalty/$code", params: { code: trimmed } });
   };
 
+  const clearSession = () => {
+    localStorage.removeItem(STORAGE_KEY);
+    setHasSession(null);
+  };
+
   return (
     <div className="min-h-screen">
-      {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 -z-10 opacity-30 pointer-events-none"
           style={{ background: "radial-gradient(ellipse at 50% 0%, oklch(0.78 0.12 85 / 0.3), transparent 60%)" }} />
@@ -56,46 +58,60 @@ function Landing() {
             Cada compra te acerca a beneficios reservados para una élite.
           </p>
 
-          {/* Access card */}
-          <div className="mt-12 max-w-md mx-auto glass rounded-2xl p-6 sm:p-8 gold-border shadow-luxury">
-            {hasSession ? (
-              <>
-                <p className="text-xs tracking-[0.3em] text-muted-foreground mb-2">SESIÓN GUARDADA</p>
-                <p className="font-display text-2xl text-gradient-gold mb-4">Bienvenido de vuelta</p>
-                <Button onClick={() => open(hasSession)}
-                  className="w-full bg-gradient-gold text-background font-medium">
-                  Abrir mi tarjeta ({hasSession})
-                </Button>
-                <button onClick={() => { localStorage.removeItem(STORAGE_KEY); setHasSession(null); }}
-                  className="text-xs text-muted-foreground hover:text-gold mt-3">
-                  Usar otra tarjeta
-                </button>
-              </>
-            ) : (
-              <>
-                <div className="flex items-center justify-center gap-2 text-gold mb-3">
-                  <ScanLine className="w-5 h-5" />
-                  <span className="text-xs tracking-[0.3em]">ACCEDE A TU TARJETA</span>
-                </div>
-                <p className="text-sm text-muted-foreground mb-5">
-                  Escanea tu código QR o ingresa el código de tu tarjeta.
-                </p>
-                <form onSubmit={e => { e.preventDefault(); open(code); }} className="flex gap-2">
-                  <div className="relative flex-1">
-                    <KeyRound className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                    <Input value={code} onChange={e => setCode(e.target.value.toUpperCase())}
-                      placeholder="CÓDIGO" className="pl-9 font-mono tracking-widest uppercase" maxLength={10} />
-                  </div>
-                  <Button type="submit" className="bg-gradient-gold text-background">Abrir</Button>
-                </form>
-              </>
-            )}
-          </div>
+          <AccessCard hasSession={hasSession} onOpen={open} onClearSession={clearSession} />
         </div>
       </section>
 
       <TiersSection />
     </div>
+  );
+}
+
+const AccessCard = memo(function AccessCard({
+  hasSession, onOpen, onClearSession,
+}: { hasSession: string | null; onOpen: (c: string) => void; onClearSession: () => void }) {
+  return (
+    <div className="mt-12 max-w-md mx-auto glass rounded-2xl p-6 sm:p-8 gold-border shadow-luxury">
+      {hasSession ? (
+        <>
+          <p className="text-xs tracking-[0.3em] text-muted-foreground mb-2">SESIÓN GUARDADA</p>
+          <p className="font-display text-2xl text-gradient-gold mb-4">Bienvenido de vuelta</p>
+          <Button onClick={() => onOpen(hasSession)}
+            className="w-full bg-gradient-gold text-background font-medium">
+            Abrir mi tarjeta ({hasSession})
+          </Button>
+          <button onClick={onClearSession}
+            className="text-xs text-muted-foreground hover:text-gold mt-3">
+            Usar otra tarjeta
+          </button>
+        </>
+      ) : (
+        <CodeForm onOpen={onOpen} />
+      )}
+    </div>
+  );
+});
+
+function CodeForm({ onOpen }: { onOpen: (c: string) => void }) {
+  const [code, setCode] = useState("");
+  return (
+    <>
+      <div className="flex items-center justify-center gap-2 text-gold mb-3">
+        <ScanLine className="w-5 h-5" />
+        <span className="text-xs tracking-[0.3em]">ACCEDE A TU TARJETA</span>
+      </div>
+      <p className="text-sm text-muted-foreground mb-5">
+        Escanea tu código QR o ingresa el código de tu tarjeta.
+      </p>
+      <form onSubmit={e => { e.preventDefault(); onOpen(code); }} className="flex gap-2">
+        <div className="relative flex-1">
+          <KeyRound className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <Input value={code} onChange={e => setCode(e.target.value.toUpperCase())}
+            placeholder="CÓDIGO" className="pl-9 font-mono tracking-widest uppercase" maxLength={10} />
+        </div>
+        <Button type="submit" className="bg-gradient-gold text-background">Abrir</Button>
+      </form>
+    </>
   );
 }
 
