@@ -70,24 +70,32 @@ function CustomersList() {
               <Plus className="w-4 h-4 mr-2" /> Nuevo cliente
             </Button>
           </DialogTrigger>
-          <DialogContent className="glass gold-border max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="font-display text-2xl text-gradient-gold">Registrar cliente</DialogTitle>
-            </DialogHeader>
-            <form onSubmit={create} className="space-y-4">
-              <div className="space-y-2">
-                <Label>Nombre completo</Label>
-                <Input value={name} onChange={e => setName(e.target.value)} required maxLength={120} />
+          <DialogContent className="glass gold-border p-0">
+            <div className="p-6 pb-4">
+              <DialogHeader>
+                <DialogTitle className="font-display text-2xl text-gradient-gold">Registrar cliente</DialogTitle>
+              </DialogHeader>
+            </div>
+            <form onSubmit={create} className="flex flex-col">
+              <div className="px-6 space-y-4 pb-4">
+                <div className="space-y-2">
+                  <Label htmlFor="cust-name">Nombre completo</Label>
+                  <Input id="cust-name" value={name} onChange={e => setName(e.target.value)}
+                    required maxLength={120} autoComplete="name" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="cust-phone">Teléfono</Label>
+                  <Input id="cust-phone" type="tel" inputMode="tel" value={phone}
+                    onChange={e => setPhone(e.target.value)} required maxLength={30}
+                    autoComplete="tel" />
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label>Teléfono</Label>
-                <Input value={phone} onChange={e => setPhone(e.target.value)} required maxLength={30} />
-              </div>
-              <DialogFooter className="pt-2">
-                <Button type="submit" disabled={creating} className="w-full sm:w-auto bg-gradient-gold text-background">
+              <div className="sticky bottom-0 bg-background/95 backdrop-blur-md border-t border-border/40 px-6 py-4">
+                <Button type="submit" disabled={creating}
+                  className="w-full bg-gradient-gold text-background hover:opacity-90 font-medium">
                   {creating ? "Creando..." : "Crear cliente"}
                 </Button>
-              </DialogFooter>
+              </div>
             </form>
           </DialogContent>
         </Dialog>
