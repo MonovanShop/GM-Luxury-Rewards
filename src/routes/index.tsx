@@ -1,4 +1,4 @@
-import { createFileRoute, useRouter, Link } from "@tanstack/react-router";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -124,12 +124,6 @@ function Landing() {
           })}
         </div>
 
-        <div className="mt-16 text-center">
-          <Link to="/admin/login"
-            className="text-xs text-muted-foreground hover:text-gold tracking-widest">
-            ACCESO ADMINISTRADOR →
-          </Link>
-        </div>
       </section>
     </div>
   );
