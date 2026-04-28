@@ -94,43 +94,46 @@ function Landing() {
         </div>
       </section>
 
-      {/* Tiers */}
-      <section className="max-w-6xl mx-auto px-6 pb-24">
-        <div className="text-center mb-12">
-          <p className="text-[10px] tracking-[0.4em] text-muted-foreground">NUESTROS NIVELES</p>
-          <h3 className="font-display text-3xl sm:text-4xl text-gradient-gold mt-2">
-            Tres formas de pertenecer
-          </h3>
-        </div>
-        <div className="grid md:grid-cols-3 gap-6">
-          {(["classic","elite","black"] as const).map((t, i) => {
-            const info = TIER_INFO[t];
-            const bg = t === "black" ? "tier-black-bg" : t === "elite" ? "tier-elite-bg" : "tier-classic-bg";
-            return (
-              <div key={t}
-                className={`relative rounded-2xl p-6 gold-border shadow-card-lux ${bg} fade-in-up`}
-                style={{ animationDelay: `${i * 120}ms` }}>
-                <div className="text-[10px] tracking-[0.4em] text-gold-soft/80">{info.label}</div>
-                <div className="font-display text-2xl text-gradient-gold mt-1">{info.name}</div>
-                <div className="text-xs text-muted-foreground mt-1">
-                  {info.max ? `${info.min} a ${info.max} compras` : `${info.min}+ compras`}
-                </div>
-                <div className="mt-5 font-display text-4xl text-gradient-gold">{info.discount}</div>
-                <div className="text-xs text-muted-foreground">de descuento</div>
-                <ul className="mt-5 space-y-2 text-sm">
-                  {info.benefits.map(b => (
-                    <li key={b} className="flex items-start gap-2">
-                      <span className="text-gold mt-0.5">✦</span>
-                      <span className="text-foreground/80">{b}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            );
-          })}
-        </div>
-
-      </section>
+      <TiersSection />
     </div>
   );
 }
+
+const TiersSection = memo(function TiersSection() {
+  return (
+    <section className="max-w-6xl mx-auto px-6 pb-24">
+      <div className="text-center mb-12">
+        <p className="text-[10px] tracking-[0.4em] text-muted-foreground">NUESTROS NIVELES</p>
+        <h3 className="font-display text-3xl sm:text-4xl text-gradient-gold mt-2">
+          Tres formas de pertenecer
+        </h3>
+      </div>
+      <div className="grid md:grid-cols-3 gap-6">
+        {(["classic","elite","black"] as const).map((t) => {
+          const info = TIER_INFO[t];
+          const bg = t === "black" ? "tier-black-bg" : t === "elite" ? "tier-elite-bg" : "tier-classic-bg";
+          return (
+            <div key={t}
+              className={`relative rounded-2xl p-6 gold-border shadow-card-lux ${bg}`}>
+              <div className="text-[10px] tracking-[0.4em] text-gold-soft/80">{info.label}</div>
+              <div className="font-display text-2xl text-gradient-gold mt-1">{info.name}</div>
+              <div className="text-xs text-muted-foreground mt-1">
+                {info.max ? `${info.min} a ${info.max} compras` : `${info.min}+ compras`}
+              </div>
+              <div className="mt-5 font-display text-4xl text-gradient-gold">{info.discount}</div>
+              <div className="text-xs text-muted-foreground">de descuento</div>
+              <ul className="mt-5 space-y-2 text-sm">
+                {info.benefits.map(b => (
+                  <li key={b} className="flex items-start gap-2">
+                    <span className="text-gold mt-0.5">✦</span>
+                    <span className="text-foreground/80">{b}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+});
