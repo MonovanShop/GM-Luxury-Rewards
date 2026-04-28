@@ -70,7 +70,7 @@ function CustomersList() {
               <Plus className="w-4 h-4 mr-2" /> Nuevo cliente
             </Button>
           </DialogTrigger>
-          <DialogContent className="glass gold-border">
+          <DialogContent className="glass gold-border max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="font-display text-2xl text-gradient-gold">Registrar cliente</DialogTitle>
             </DialogHeader>
@@ -83,8 +83,8 @@ function CustomersList() {
                 <Label>Teléfono</Label>
                 <Input value={phone} onChange={e => setPhone(e.target.value)} required maxLength={30} />
               </div>
-              <DialogFooter>
-                <Button type="submit" disabled={creating} className="bg-gradient-gold text-background">
+              <DialogFooter className="pt-2">
+                <Button type="submit" disabled={creating} className="w-full sm:w-auto bg-gradient-gold text-background">
                   {creating ? "Creando..." : "Crear cliente"}
                 </Button>
               </DialogFooter>
