@@ -70,14 +70,12 @@ function CustomersList() {
               <Plus className="w-4 h-4 mr-2" /> Nuevo cliente
             </Button>
           </DialogTrigger>
-          <DialogContent className="glass gold-border p-0">
-            <div className="p-6 pb-4">
-              <DialogHeader>
-                <DialogTitle className="font-display text-2xl text-gradient-gold">Registrar cliente</DialogTitle>
-              </DialogHeader>
-            </div>
-            <form onSubmit={create} className="flex flex-col">
-              <div className="px-6 space-y-4 pb-4">
+          <DialogContent className="glass gold-border">
+            <DialogHeader className="px-6 pt-6 pb-4 border-b border-border/40 shrink-0">
+              <DialogTitle className="font-display text-2xl text-gradient-gold">Registrar cliente</DialogTitle>
+            </DialogHeader>
+            <form onSubmit={create} className="flex flex-col flex-1 min-h-0">
+              <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="cust-name">Nombre completo</Label>
                   <Input id="cust-name" value={name} onChange={e => setName(e.target.value)}
@@ -90,7 +88,7 @@ function CustomersList() {
                     autoComplete="tel" />
                 </div>
               </div>
-              <div className="sticky bottom-0 bg-background/95 backdrop-blur-md border-t border-border/40 px-6 py-4">
+              <div className="shrink-0 border-t border-border/40 bg-background/95 backdrop-blur-md px-6 py-4">
                 <Button type="submit" disabled={creating}
                   className="w-full bg-gradient-gold text-background hover:opacity-90 font-medium">
                   {creating ? "Creando..." : "Crear cliente"}
