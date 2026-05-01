@@ -317,9 +317,9 @@ function CustomerFormDialog({
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <label className="block">
-      <span className="mb-1 block text-xs uppercase tracking-widest text-muted-foreground">{label}</span>
+    <div className="block">
+      <Label className="mb-1 block text-xs uppercase tracking-widest text-muted-foreground">{label}</Label>
       {children}
-    </label>
+    </div>
   );
 }
