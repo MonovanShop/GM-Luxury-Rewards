@@ -1,7 +1,7 @@
 {
   "framework": "vite",
-  "installCommand": "npm ci --registry=https://registry.npmjs.org/ --no-audit --no-fund",
-  "buildCommand": "npm run build:vercel",
+  "installCommand": "bun install --frozen-lockfile",
+  "buildCommand": "bunx vite build --config vite.vercel.config.ts",
   "outputDirectory": "dist",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
