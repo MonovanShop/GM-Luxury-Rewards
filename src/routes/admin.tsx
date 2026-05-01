@@ -1,5 +1,6 @@
 import { createFileRoute, Outlet, Link, useNavigate, useRouter } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import type { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,12 +36,11 @@ function AdminLayout() {
     if (!mounted) return;
     let active = true;
 
-    async function check() {
+    async function checkUser(user: User | null | undefined) {
       try {
-        const { data: sessionData } = await supabase.auth.getSession();
-        const user = sessionData.session?.user;
         if (!active) return;
         if (!user) {
+          setEmail(null);
           setState("anon");
           return;
         }
@@ -57,14 +57,26 @@ function AdminLayout() {
       }
     }
 
+    async function checkInitialSession() {
+      try {
+        const { data: sessionData } = await supabase.auth.getSession();
+        await checkUser(sessionData.session?.user);
+      } catch {
+        if (active) setState("anon");
+      }
+    }
+
     // Safety: never stay in "loading" forever in production
     const failsafe = setTimeout(() => {
       if (active) setState((s) => (s === "loading" ? "anon" : s));
     }, 4000);
 
-    check();
-    const { data: sub } = supabase.auth.onAuthStateChange(() => {
-      check();
+    checkInitialSession();
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      setState(session?.user ? "loading" : "anon");
+      window.setTimeout(() => {
+        void checkUser(session?.user);
+      }, 0);
     });
     return () => {
       active = false;
