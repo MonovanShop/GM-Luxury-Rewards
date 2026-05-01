@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -40,6 +40,7 @@ function CustomersPage() {
   const [editing, setEditing] = useState<Customer | null>(null);
   const [creatingOpen, setCreatingOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const deferredSearch = useDeferredValue(search);
 
   const load = async () => {
     setLoading(true);
@@ -55,7 +56,7 @@ function CustomersPage() {
   useEffect(() => { load(); }, []);
 
   const filtered = useMemo(() => {
-    const q = search.trim().toLowerCase();
+    const q = deferredSearch.trim().toLowerCase();
     if (!q) return items;
     return items.filter((c) =>
       c.full_name.toLowerCase().includes(q)
@@ -63,7 +64,7 @@ function CustomersPage() {
       || (c.email ?? "").toLowerCase().includes(q)
       || (c.phone ?? "").toLowerCase().includes(q),
     );
-  }, [items, search]);
+  }, [items, deferredSearch]);
 
   const stats = useMemo(() => {
     const counts: Record<Tier, number> = { classic: 0, elite: 0, black: 0 };
