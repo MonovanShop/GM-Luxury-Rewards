@@ -14,6 +14,9 @@ import {
 import { Plus, Search, Pencil, Trash2, Minus, PlusCircle } from "lucide-react";
 import { tierFromCount, tierMeta, progressToNext, type Tier } from "@/lib/tier";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/admin/")({
   component: CustomersPage,
