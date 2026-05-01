@@ -279,26 +279,25 @@ function CustomerFormDialog({
       </DialogHeader>
       <form onSubmit={submit} className="space-y-3">
         <Field label="Nombre completo *">
-          <input value={fullName} onChange={(e) => setFullName(e.target.value)} maxLength={120} required className="input" />
+          <Input value={fullName} onChange={(e) => setFullName(e.target.value)} maxLength={120} required />
         </Field>
         <div className="grid gap-3 sm:grid-cols-2">
           <Field label="Email">
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} maxLength={200} className="input" />
+            <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} maxLength={200} />
           </Field>
           <Field label="Teléfono">
-            <input value={phone} onChange={(e) => setPhone(e.target.value)} maxLength={40} className="input" />
+            <Input value={phone} onChange={(e) => setPhone(e.target.value)} maxLength={40} />
           </Field>
         </div>
         <Field label="Compras realizadas">
-          <input
+          <Input
             type="number" min={0} max={9999}
             value={purchases}
             onChange={(e) => setPurchases(Math.max(0, parseInt(e.target.value || "0", 10)))}
-            className="input"
           />
         </Field>
         <Field label="Notas">
-          <textarea value={notes} onChange={(e) => setNotes(e.target.value)} maxLength={500} rows={3} className="input resize-none" />
+          <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} maxLength={500} rows={3} className="resize-none" />
         </Field>
         {customer ? (
           <p className="text-xs text-muted-foreground">
@@ -312,7 +311,6 @@ function CustomerFormDialog({
           <Button type="submit" disabled={saving}>{saving ? "Guardando…" : "Guardar"}</Button>
         </DialogFooter>
       </form>
-      <style>{`.input{width:100%;border:1px solid var(--border);background:var(--background);color:var(--foreground);border-radius:6px;padding:.55rem .65rem;font-size:.875rem;outline:none}.input:focus{border-color:var(--gold)}`}</style>
     </DialogContent>
   );
 }
