@@ -9,173 +9,38 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as LoyaltyRouteImport } from './routes/loyalty'
-import { Route as DiagRouteImport } from './routes/diag'
-import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as LoyaltyCodeRouteImport } from './routes/loyalty.$code'
-import { Route as AdminLoginRouteImport } from './routes/admin.login'
-import { Route as AdminCustomersIndexRouteImport } from './routes/admin.customers.index'
-import { Route as ApiAdminCreateCustomerRouteImport } from './routes/api.admin.create-customer'
-import { Route as AdminCustomersIdRouteImport } from './routes/admin.customers.$id'
 
-const LoyaltyRoute = LoyaltyRouteImport.update({
-  id: '/loyalty',
-  path: '/loyalty',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DiagRoute = DiagRouteImport.update({
-  id: '/diag',
-  path: '/diag',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const LoyaltyCodeRoute = LoyaltyCodeRouteImport.update({
-  id: '/$code',
-  path: '/$code',
-  getParentRoute: () => LoyaltyRoute,
-} as any)
-const AdminLoginRoute = AdminLoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminCustomersIndexRoute = AdminCustomersIndexRouteImport.update({
-  id: '/customers/',
-  path: '/customers/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const ApiAdminCreateCustomerRoute = ApiAdminCreateCustomerRouteImport.update({
-  id: '/api/admin/create-customer',
-  path: '/api/admin/create-customer',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminCustomersIdRoute = AdminCustomersIdRouteImport.update({
-  id: '/customers/$id',
-  path: '/customers/$id',
-  getParentRoute: () => AdminRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteWithChildren
-  '/diag': typeof DiagRoute
-  '/loyalty': typeof LoyaltyRouteWithChildren
-  '/admin/login': typeof AdminLoginRoute
-  '/loyalty/$code': typeof LoyaltyCodeRoute
-  '/admin/': typeof AdminIndexRoute
-  '/admin/customers/$id': typeof AdminCustomersIdRoute
-  '/api/admin/create-customer': typeof ApiAdminCreateCustomerRoute
-  '/admin/customers/': typeof AdminCustomersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/diag': typeof DiagRoute
-  '/loyalty': typeof LoyaltyRouteWithChildren
-  '/admin/login': typeof AdminLoginRoute
-  '/loyalty/$code': typeof LoyaltyCodeRoute
-  '/admin': typeof AdminIndexRoute
-  '/admin/customers/$id': typeof AdminCustomersIdRoute
-  '/api/admin/create-customer': typeof ApiAdminCreateCustomerRoute
-  '/admin/customers': typeof AdminCustomersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteWithChildren
-  '/diag': typeof DiagRoute
-  '/loyalty': typeof LoyaltyRouteWithChildren
-  '/admin/login': typeof AdminLoginRoute
-  '/loyalty/$code': typeof LoyaltyCodeRoute
-  '/admin/': typeof AdminIndexRoute
-  '/admin/customers/$id': typeof AdminCustomersIdRoute
-  '/api/admin/create-customer': typeof ApiAdminCreateCustomerRoute
-  '/admin/customers/': typeof AdminCustomersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/admin'
-    | '/diag'
-    | '/loyalty'
-    | '/admin/login'
-    | '/loyalty/$code'
-    | '/admin/'
-    | '/admin/customers/$id'
-    | '/api/admin/create-customer'
-    | '/admin/customers/'
+  fullPaths: '/'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/diag'
-    | '/loyalty'
-    | '/admin/login'
-    | '/loyalty/$code'
-    | '/admin'
-    | '/admin/customers/$id'
-    | '/api/admin/create-customer'
-    | '/admin/customers'
-  id:
-    | '__root__'
-    | '/'
-    | '/admin'
-    | '/diag'
-    | '/loyalty'
-    | '/admin/login'
-    | '/loyalty/$code'
-    | '/admin/'
-    | '/admin/customers/$id'
-    | '/api/admin/create-customer'
-    | '/admin/customers/'
+  to: '/'
+  id: '__root__' | '/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRouteWithChildren
-  DiagRoute: typeof DiagRoute
-  LoyaltyRoute: typeof LoyaltyRouteWithChildren
-  ApiAdminCreateCustomerRoute: typeof ApiAdminCreateCustomerRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/loyalty': {
-      id: '/loyalty'
-      path: '/loyalty'
-      fullPath: '/loyalty'
-      preLoaderRoute: typeof LoyaltyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/diag': {
-      id: '/diag'
-      path: '/diag'
-      fullPath: '/diag'
-      preLoaderRoute: typeof DiagRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -183,84 +48,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/': {
-      id: '/admin/'
-      path: '/'
-      fullPath: '/admin/'
-      preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/loyalty/$code': {
-      id: '/loyalty/$code'
-      path: '/$code'
-      fullPath: '/loyalty/$code'
-      preLoaderRoute: typeof LoyaltyCodeRouteImport
-      parentRoute: typeof LoyaltyRoute
-    }
-    '/admin/login': {
-      id: '/admin/login'
-      path: '/login'
-      fullPath: '/admin/login'
-      preLoaderRoute: typeof AdminLoginRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/customers/': {
-      id: '/admin/customers/'
-      path: '/customers'
-      fullPath: '/admin/customers/'
-      preLoaderRoute: typeof AdminCustomersIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/api/admin/create-customer': {
-      id: '/api/admin/create-customer'
-      path: '/api/admin/create-customer'
-      fullPath: '/api/admin/create-customer'
-      preLoaderRoute: typeof ApiAdminCreateCustomerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/customers/$id': {
-      id: '/admin/customers/$id'
-      path: '/customers/$id'
-      fullPath: '/admin/customers/$id'
-      preLoaderRoute: typeof AdminCustomersIdRouteImport
-      parentRoute: typeof AdminRoute
-    }
   }
 }
 
-interface AdminRouteChildren {
-  AdminLoginRoute: typeof AdminLoginRoute
-  AdminIndexRoute: typeof AdminIndexRoute
-  AdminCustomersIdRoute: typeof AdminCustomersIdRoute
-  AdminCustomersIndexRoute: typeof AdminCustomersIndexRoute
-}
-
-const AdminRouteChildren: AdminRouteChildren = {
-  AdminLoginRoute: AdminLoginRoute,
-  AdminIndexRoute: AdminIndexRoute,
-  AdminCustomersIdRoute: AdminCustomersIdRoute,
-  AdminCustomersIndexRoute: AdminCustomersIndexRoute,
-}
-
-const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
-
-interface LoyaltyRouteChildren {
-  LoyaltyCodeRoute: typeof LoyaltyCodeRoute
-}
-
-const LoyaltyRouteChildren: LoyaltyRouteChildren = {
-  LoyaltyCodeRoute: LoyaltyCodeRoute,
-}
-
-const LoyaltyRouteWithChildren =
-  LoyaltyRoute._addFileChildren(LoyaltyRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRouteWithChildren,
-  DiagRoute: DiagRoute,
-  LoyaltyRoute: LoyaltyRouteWithChildren,
-  ApiAdminCreateCustomerRoute: ApiAdminCreateCustomerRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
