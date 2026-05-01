@@ -167,8 +167,8 @@ function CenterShell({ children }: { children: React.ReactNode }) {
 
 function LoginPanel({ onSuccess }: { onSuccess: () => void }) {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -177,15 +177,17 @@ function LoginPanel({ onSuccess }: { onSuccess: () => void }) {
     setError(null);
     setLoading(true);
     try {
+      const formEmail = emailRef.current?.value.trim() ?? "";
+      const formPassword = passwordRef.current?.value ?? "";
       if (mode === "signup") {
         const { error: err } = await supabase.auth.signUp({
-          email,
-          password,
+          email: formEmail,
+          password: formPassword,
           options: { emailRedirectTo: `${window.location.origin}/admin` },
         });
         if (err) throw err;
       } else {
-        const { error: err } = await supabase.auth.signInWithPassword({ email, password });
+        const { error: err } = await supabase.auth.signInWithPassword({ email: formEmail, password: formPassword });
         if (err) throw err;
       }
       onSuccess();
@@ -215,8 +217,7 @@ function LoginPanel({ onSuccess }: { onSuccess: () => void }) {
           type="email"
           required
           autoComplete="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          ref={emailRef}
           className="mt-1"
         />
 
@@ -228,8 +229,7 @@ function LoginPanel({ onSuccess }: { onSuccess: () => void }) {
           required
           minLength={6}
           autoComplete={mode === "signin" ? "current-password" : "new-password"}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          ref={passwordRef}
           className="mt-1"
         />
 
