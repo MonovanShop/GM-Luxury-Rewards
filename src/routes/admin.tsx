@@ -21,31 +21,46 @@ export const Route = createFileRoute("/admin")({
 });
 
 function AdminLayout() {
+  const [mounted, setMounted] = useState(false);
   const [state, setState] = useState<AdminCheck>("loading");
   const [email, setEmail] = useState<string | null>(null);
   const navigate = useNavigate();
   const router = useRouter();
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
     let active = true;
 
     async function check() {
-      const { data: sessionData } = await supabase.auth.getSession();
-      const user = sessionData.session?.user;
-      if (!active) return;
-      if (!user) {
-        setState("anon");
-        return;
+      try {
+        const { data: sessionData } = await supabase.auth.getSession();
+        const user = sessionData.session?.user;
+        if (!active) return;
+        if (!user) {
+          setState("anon");
+          return;
+        }
+        setEmail(user.email ?? null);
+        const { data: roles } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", user.id);
+        if (!active) return;
+        const isAdmin = (roles ?? []).some((r) => r.role === "admin");
+        setState(isAdmin ? "ok" : "not-admin");
+      } catch {
+        if (active) setState("anon");
       }
-      setEmail(user.email ?? null);
-      const { data: roles } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", user.id);
-      if (!active) return;
-      const isAdmin = (roles ?? []).some((r) => r.role === "admin");
-      setState(isAdmin ? "ok" : "not-admin");
     }
+
+    // Safety: never stay in "loading" forever in production
+    const failsafe = setTimeout(() => {
+      if (active) setState((s) => (s === "loading" ? "anon" : s));
+    }, 4000);
 
     check();
     const { data: sub } = supabase.auth.onAuthStateChange(() => {
@@ -53,9 +68,15 @@ function AdminLayout() {
     });
     return () => {
       active = false;
+      clearTimeout(failsafe);
       sub.subscription.unsubscribe();
     };
-  }, []);
+  }, [mounted]);
+
+  // Avoid SSR/hydration mismatch — render nothing on the server, login form mounts on client
+  if (!mounted) {
+    return <CenterShell>Cargando panel…</CenterShell>;
+  }
 
   if (state === "loading") {
     return <CenterShell>Verificando acceso…</CenterShell>;
