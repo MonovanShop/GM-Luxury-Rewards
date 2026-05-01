@@ -2,6 +2,8 @@ import { createFileRoute, Outlet, Link, useNavigate, useRouter } from "@tanstack
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { LogOut, Sparkles } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -173,29 +175,29 @@ function LoginPanel({ onSuccess }: { onSuccess: () => void }) {
           {mode === "signin" ? "Inicia sesión para gestionar clientes." : "Crea tu cuenta admin."}
         </p>
 
-        <label className="mt-6 block text-xs uppercase tracking-widest text-muted-foreground">
+        <Label className="mt-6 block text-xs uppercase tracking-widest text-muted-foreground">
           Email
-        </label>
-        <input
+        </Label>
+        <Input
           type="email"
           required
           autoComplete="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-gold"
+          className="mt-1"
         />
 
-        <label className="mt-4 block text-xs uppercase tracking-widest text-muted-foreground">
+        <Label className="mt-4 block text-xs uppercase tracking-widest text-muted-foreground">
           Contraseña
-        </label>
-        <input
+        </Label>
+        <Input
           type="password"
           required
           minLength={6}
           autoComplete={mode === "signin" ? "current-password" : "new-password"}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-gold"
+          className="mt-1"
         />
 
         {error ? (

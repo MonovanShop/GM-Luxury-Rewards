@@ -14,6 +14,9 @@ import {
 import { Plus, Search, Pencil, Trash2, Minus, PlusCircle } from "lucide-react";
 import { tierFromCount, tierMeta, progressToNext, type Tier } from "@/lib/tier";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/admin/")({
   component: CustomersPage,
@@ -114,11 +117,11 @@ function CustomersPage() {
 
       <div className="relative">
         <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <input
+        <Input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Buscar por nombre, código, email o teléfono"
-          className="w-full rounded-md border border-border bg-background py-2.5 pl-10 pr-3 text-sm outline-none focus:border-gold"
+          className="pl-10"
         />
       </div>
 
@@ -276,26 +279,25 @@ function CustomerFormDialog({
       </DialogHeader>
       <form onSubmit={submit} className="space-y-3">
         <Field label="Nombre completo *">
-          <input value={fullName} onChange={(e) => setFullName(e.target.value)} maxLength={120} required className="input" />
+          <Input value={fullName} onChange={(e) => setFullName(e.target.value)} maxLength={120} required />
         </Field>
         <div className="grid gap-3 sm:grid-cols-2">
           <Field label="Email">
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} maxLength={200} className="input" />
+            <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} maxLength={200} />
           </Field>
           <Field label="Teléfono">
-            <input value={phone} onChange={(e) => setPhone(e.target.value)} maxLength={40} className="input" />
+            <Input value={phone} onChange={(e) => setPhone(e.target.value)} maxLength={40} />
           </Field>
         </div>
         <Field label="Compras realizadas">
-          <input
+          <Input
             type="number" min={0} max={9999}
             value={purchases}
             onChange={(e) => setPurchases(Math.max(0, parseInt(e.target.value || "0", 10)))}
-            className="input"
           />
         </Field>
         <Field label="Notas">
-          <textarea value={notes} onChange={(e) => setNotes(e.target.value)} maxLength={500} rows={3} className="input resize-none" />
+          <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} maxLength={500} rows={3} className="resize-none" />
         </Field>
         {customer ? (
           <p className="text-xs text-muted-foreground">
@@ -309,16 +311,15 @@ function CustomerFormDialog({
           <Button type="submit" disabled={saving}>{saving ? "Guardando…" : "Guardar"}</Button>
         </DialogFooter>
       </form>
-      <style>{`.input{width:100%;border:1px solid var(--border);background:var(--background);color:var(--foreground);border-radius:6px;padding:.55rem .65rem;font-size:.875rem;outline:none}.input:focus{border-color:var(--gold)}`}</style>
     </DialogContent>
   );
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <label className="block">
-      <span className="mb-1 block text-xs uppercase tracking-widest text-muted-foreground">{label}</span>
+    <div className="block">
+      <Label className="mb-1 block text-xs uppercase tracking-widest text-muted-foreground">{label}</Label>
       {children}
-    </label>
+    </div>
   );
 }
