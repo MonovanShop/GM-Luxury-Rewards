@@ -309,7 +309,7 @@ function CustomerFormDialog({
           <Button type="submit" disabled={saving}>{saving ? "Guardando…" : "Guardar"}</Button>
         </DialogFooter>
       </form>
-      <style>{`.input{width:100%;border:1px solid hsl(var(--border));background:hsl(var(--background));border-radius:6px;padding:.55rem .65rem;font-size:.875rem;outline:none}.input:focus{border-color:oklch(0.78 0.13 85)}`}</style>
+      <style>{`.input{width:100%;border:1px solid var(--border);background:var(--background);color:var(--foreground);border-radius:6px;padding:.55rem .65rem;font-size:.875rem;outline:none}.input:focus{border-color:var(--gold)}`}</style>
     </DialogContent>
   );
 }
