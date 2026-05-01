@@ -117,11 +117,11 @@ function CustomersPage() {
 
       <div className="relative">
         <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <input
+        <Input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Buscar por nombre, código, email o teléfono"
-          className="w-full rounded-md border border-border bg-background py-2.5 pl-10 pr-3 text-sm outline-none focus:border-gold"
+          className="pl-10"
         />
       </div>
 
