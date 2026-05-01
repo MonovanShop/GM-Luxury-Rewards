@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Award, Crown, Gem, ShieldCheck, Sparkles, Star } from "lucide-react";
 
 export const Route = createFileRoute("/")({
@@ -35,9 +35,14 @@ function LoyaltyPresentation() {
                 <p className="mt-1 text-[10px] tracking-[0.42em] text-muted-foreground">REWARDS CARD</p>
               </div>
             </div>
-            <div className="hidden items-center gap-2 text-xs text-muted-foreground sm:flex">
-              <ShieldCheck className="h-4 w-4 text-gold" />
-              <span>Luxury Brands Hub</span>
+            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+              <div className="hidden items-center gap-2 sm:flex">
+                <ShieldCheck className="h-4 w-4 text-gold" />
+                <span>Luxury Brands Hub</span>
+              </div>
+              <Link to="/admin" className="rounded-md border border-border/70 px-3 py-1.5 hover:border-gold hover:text-gold">
+                Admin
+              </Link>
             </div>
           </header>
 
