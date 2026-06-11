@@ -1,7 +1,7 @@
 {
   "framework": "vite",
-  "installCommand": "bun install --frozen-lockfile",
-  "buildCommand": "bunx vite build --config vite.vercel.config.ts",
+  "installCommand": "bun install",
+  "buildCommand": "vite build",
   "outputDirectory": "dist",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
