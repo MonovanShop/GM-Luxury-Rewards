@@ -49,7 +49,10 @@ export default function ClientDashboard() {
 
   if (!currentClient) return null
 
-  const info = TIER_INFO[currentClient.tier]
+  const progress = getProgress(currentClient.purchases)
+  const activeTier = progress.earnedTier
+  const info = TIER_INFO[activeTier ?? 'classic']
+  const discountLabel = progress.discount > 0 ? `${progress.discount}%` : '—'
   const tiers = ['classic', 'elite', 'black'] as const
 
   return (
