@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Particles from '../components/Particles'
 import LoyaltyCard from '../components/LoyaltyCard'
-import { useAuth } from '../hooks/useAuth'
+import { useAuth, getProgress, MILESTONES } from '../hooks/useAuth'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 
 const TIER_INFO = {
