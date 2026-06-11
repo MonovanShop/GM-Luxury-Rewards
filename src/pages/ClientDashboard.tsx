@@ -171,7 +171,9 @@ export default function ClientDashboard() {
           <p className="text-[10px] tracking-[4px] mb-6 reveal" style={{ color: '#555' }}>NIVELES DE MEMBRESÍA</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {tiers.map((tier, i) => {
-              const isActive = tier === currentClient.tier
+              const milestone = MILESTONES.find(m => m.tier === tier)!
+              const unlocked = currentClient.purchases >= milestone.threshold
+              const isCurrent = tier === activeTier
               const ti = TIER_INFO[tier]
               return (
                 <div
@@ -179,26 +181,32 @@ export default function ClientDashboard() {
                   className="reveal p-6 rounded-2xl transition-all duration-300 relative"
                   style={{
                     transitionDelay: `${i * 0.1}s`,
-                    background: isActive ? ti.color : '#111',
-                    border: `1px solid ${isActive ? ti.border : 'rgba(201,168,76,0.1)'}`,
+                    background: isCurrent ? ti.color : '#111',
+                    border: `1px solid ${isCurrent ? ti.border : 'rgba(201,168,76,0.1)'}`,
+                    opacity: unlocked ? 1 : 0.55,
                   }}
                 >
-                  {isActive && (
-                    <span className="absolute top-3 right-3 text-[8px] tracking-[2px] px-2 py-1 rounded-full pulse-gold"
-                      style={{ background: 'rgba(201,168,76,0.2)', color: '#C9A84C', border: '1px solid rgba(201,168,76,0.3)' }}>
-                      ACTIVO
-                    </span>
-                  )}
-                  <div className="text-2xl mb-2" style={{ color: isActive ? '#C9A84C' : '#444' }}>
-                    {TIER_ICONS[tier]}
+                  <span className="absolute top-3 right-3 text-[8px] tracking-[2px] px-2 py-1 rounded-full"
+                    style={{
+                      background: unlocked ? 'rgba(201,168,76,0.2)' : 'rgba(255,255,255,0.04)',
+                      color: unlocked ? '#C9A84C' : '#555',
+                      border: `1px solid ${unlocked ? 'rgba(201,168,76,0.3)' : 'rgba(255,255,255,0.08)'}`,
+                    }}>
+                    {isCurrent ? 'ACTIVO' : unlocked ? 'LOGRADO' : `${milestone.threshold} COMPRAS`}
+                  </span>
+                  <div className="text-2xl mb-2" style={{ color: unlocked ? '#C9A84C' : '#444' }}>
+                    {unlocked ? TIER_ICONS[tier] : '🔒'}
                   </div>
                   <div className="text-lg font-light capitalize mb-1"
-                    style={{ fontFamily: 'Cormorant Garamond, serif', color: isActive ? '#E8D5A3' : '#666' }}>
+                    style={{ fontFamily: 'Cormorant Garamond, serif', color: unlocked ? '#E8D5A3' : '#666' }}>
                     {tier}
                   </div>
                   <div className="text-2xl font-light"
-                    style={{ fontFamily: 'Cormorant Garamond, serif', color: isActive ? '#C9A84C' : '#444' }}>
-                    {TIER_INFO[tier].discount}
+                    style={{ fontFamily: 'Cormorant Garamond, serif', color: unlocked ? '#C9A84C' : '#444' }}>
+                    {ti.discount}
+                  </div>
+                  <div className="text-[10px] mt-1" style={{ color: '#555' }}>
+                    {unlocked ? 'desbloqueado' : `completa ${milestone.threshold} compras`}
                   </div>
                 </div>
               )
