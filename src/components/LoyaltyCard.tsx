@@ -18,7 +18,10 @@ interface Props {
 }
 
 export default function LoyaltyCard({ client, animate = true }: Props) {
-  const tierLabel = TIER_LABELS[client.tier] || 'Black Rewards'
+  const progress = getProgress(client.purchases)
+  const displayTier = progress.earnedTier ?? 'classic'
+  const benefitLabel = progress.discount > 0 ? `${progress.discount}%` : '—'
+  const tierLabel = TIER_LABELS[displayTier] || 'Black Rewards'
   const [name1, name2] = tierLabel.split(' ')
 
   return (
