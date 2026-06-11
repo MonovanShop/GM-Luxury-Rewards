@@ -1,4 +1,4 @@
-import { Client } from '../hooks/useAuth'
+import { Client, getProgress } from '../hooks/useAuth'
 
 const TIER_LABELS: Record<string, string> = {
   classic: 'Classic Rewards',
