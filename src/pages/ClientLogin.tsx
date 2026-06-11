@@ -143,14 +143,7 @@ export default function ClientLogin() {
           ¿Sin tarjeta? Visita cualquier boutique GM Luxury.
         </p>
 
-        {/* Demo hint */}
-        <div className="mt-4 p-4 rounded-xl text-center" style={{ background: 'rgba(201,168,76,0.04)', border: '1px dashed rgba(201,168,76,0.15)' }}>
-          <p className="text-[10px] tracking-[2px] mb-2" style={{ color: '#555' }}>DEMO — PRUEBA CON:</p>
-          <p className="text-xs" style={{ color: '#888' }}><span style={{ color: '#C9A84C' }}>GM-0001</span> · PIN <span style={{ color: '#C9A84C' }}>1234</span> (Black)</p>
-          <p className="text-xs mt-1" style={{ color: '#888' }}><span style={{ color: '#C9A84C' }}>GM-0002</span> · PIN <span style={{ color: '#C9A84C' }}>5678</span> (Elite)</p>
-        </div>
-
-        <div className="text-center mt-4">
+        <div className="text-center mt-6">
           <Link to="/admin" className="text-[10px] tracking-[2px]" style={{ color: '#333' }}>
             PANEL ADMIN →
           </Link>
