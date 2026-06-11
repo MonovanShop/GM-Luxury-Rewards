@@ -7,58 +7,49 @@ import { useScrollReveal } from '../hooks/useScrollReveal'
 const TIERS = [
   {
     id: 'classic',
-    icon: '☆',
+    level: 'Nivel 01',
     name: 'Classic',
-    label: 'Entrada Premium',
     discount: '5%',
     desc: 'El punto de partida para clientes distinguidos de GM Luxury.',
-    benefits: ['5% descuento en compras', 'Acceso a eventos GM', 'Newsletter exclusivo', 'Atención preferencial'],
-    color: 'rgba(100,100,100,0.15)',
-    borderColor: 'rgba(100,100,100,0.3)',
+    benefits: ['Descuento en compras', 'Acceso a eventos GM', 'Newsletter exclusivo', 'Atención preferencial'],
+    featured: false,
   },
   {
     id: 'elite',
-    icon: '◈',
+    level: 'Nivel 02',
     name: 'Elite',
-    label: 'Acceso Superior',
     discount: '10%',
-    desc: 'Para clientes con historial comprobado en las marcas del grupo.',
-    benefits: ['10% descuento ilimitado', 'Acceso anticipado a colecciones', 'Invitaciones a eventos privados', 'Asesor personal', 'Envío gratuito'],
-    color: 'rgba(30,80,140,0.15)',
-    borderColor: 'rgba(70,130,200,0.3)',
+    desc: 'Experiencias curadas y acceso prioritario a lanzamientos globales.',
+    benefits: ['Todos los beneficios Classic', 'Concierge personal 24/7', 'Invitaciones VIP Private', 'Envío gratuito'],
     featured: true,
   },
   {
     id: 'black',
-    icon: '♛',
-    name: 'Black',
-    label: 'Máximo Estatus',
+    level: 'Máximo Nivel',
+    name: 'Black Edition',
     discount: '15%',
-    desc: 'La distinción más alta. Para el cliente que lo exige todo.',
-    benefits: ['15% descuento siempre', 'Sala VIP en boutiques', 'Gestor de cuenta dedicado', 'Experiencias exclusivas', 'Conserjería 24/7', 'Acceso Luxury Brands Hub'],
-    color: 'rgba(201,168,76,0.08)',
-    borderColor: 'rgba(201,168,76,0.35)',
+    desc: 'El pináculo de nuestra hospitalidad. Sin límites, solo excelencia.',
+    benefits: ['Beneficios ilimitados Elite', 'Acceso a Luxury Lounges', 'Gestor de cuenta dedicado', 'Conserjería global 24/7'],
+    featured: false,
   },
 ]
 
-const STATS = [
-  { value: '3', label: 'NIVELES' },
-  { value: '15%', label: 'MÁXIMO BENEFICIO' },
-  { value: 'VIP', label: 'ESTATUS' },
-  { value: '∞', label: 'COMPRAS' },
+const SHOWCASE = [
+  'Descuentos permanentes en todas las marcas del grupo',
+  'Acceso anticipado a colecciones y lanzamientos exclusivos',
+  'Sala VIP en boutiques participantes (nivel Black)',
+  'Asesor personal de imagen y moda',
 ]
 
 export default function LandingPage() {
   useScrollReveal()
   const heroRef = useRef<HTMLHeadingElement>(null)
   const [displayText, setDisplayText] = useState('')
-  const fullText = 'distinguido.'
+  const fullText = 'Rewards Card'
   const [typed, setTyped] = useState(false)
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setTyped(true)
-    }, 800)
+    const timer = setTimeout(() => setTyped(true), 700)
     return () => clearTimeout(timer)
   }, [])
 
@@ -69,157 +60,151 @@ export default function LandingPage() {
       setDisplayText(fullText.slice(0, i + 1))
       i++
       if (i >= fullText.length) clearInterval(interval)
-    }, 80)
+    }, 70)
     return () => clearInterval(interval)
   }, [typed])
 
   return (
-    <div className="relative min-h-screen" style={{ background: '#0A0A0A' }}>
+    <div className="w-full overflow-hidden" style={{ background: '#0d0d0d', color: '#fff' }}>
       <Particles />
       <Navbar />
 
-      {/* ── HERO ── */}
-      <section className="relative min-h-screen flex items-center justify-center px-6 pt-20"
-        style={{ zIndex: 1 }}>
-        <div className="text-center max-w-4xl mx-auto">
-          <div className="reveal" style={{ transitionDelay: '0.1s' }}>
-            <p className="text-xs tracking-[5px] mb-8" style={{ color: '#C9A84C' }}>
-              PROGRAMA DE LEALTAD · GM LUXURY
-            </p>
-          </div>
-          <div ref={heroRef} className="reveal" style={{ transitionDelay: '0.3s' }}>
-            <h1 className="mb-6 leading-none" style={{ fontFamily: 'Cormorant Garamond, serif', fontWeight: 300 }}>
-              <span className="block text-[clamp(52px,9vw,110px)]" style={{ color: '#E8D5A3' }}>
-                Tarjeta de
-              </span>
-              <span className="block text-[clamp(52px,9vw,110px)]" style={{ color: '#E8D5A3' }}>
-                cliente
-              </span>
-              <span className="block text-[clamp(52px,9vw,110px)]" style={{ color: '#C9A84C' }}>
-                {displayText}
-                {displayText.length < fullText.length && <span className="cursor" />}
-              </span>
-            </h1>
-          </div>
-          <div className="reveal" style={{ transitionDelay: '0.5s' }}>
-            <p className="text-base max-w-md mx-auto mb-10" style={{ color: '#666', lineHeight: 1.7 }}>
-              Una membresía con beneficios reales, niveles de privilegio y
-              experiencias exclusivas para clientes GM Luxury.
-            </p>
-          </div>
-          <div className="reveal flex flex-col sm:flex-row gap-4 justify-center items-center" style={{ transitionDelay: '0.7s' }}>
+      {/* ── HERO SPLIT ── */}
+      <section className="relative min-h-screen flex flex-col md:flex-row items-center max-w-7xl mx-auto px-8 md:px-12 gap-12 pt-32 pb-20" style={{ zIndex: 1 }}>
+        {/* Left: copy */}
+        <div className="w-full md:w-1/2 z-10">
+          <span className="reveal block text-xs tracking-[0.4em] uppercase mb-6" style={{ color: '#C9A84C' }}>
+            Programa de Lealtad
+          </span>
+          <h1 ref={heroRef} className="reveal text-6xl md:text-8xl leading-[0.9] mb-8 font-light"
+            style={{ fontFamily: 'Cormorant Garamond, serif', transitionDelay: '0.1s' }}>
+            GM Luxury <br />
+            <span className="italic" style={{ color: '#C9A84C' }}>
+              {displayText || '\u00A0'}
+              {displayText.length < fullText.length && <span className="cursor" />}
+            </span>
+          </h1>
+          <p className="reveal max-w-md text-lg font-light leading-relaxed mb-10" style={{ color: '#9a9a9a', transitionDelay: '0.2s' }}>
+            Un ecosistema de privilegios diseñado exclusivamente para quienes
+            entienden que el lujo no es un destino, sino una forma de viajar.
+          </p>
+
+          <div className="reveal flex flex-wrap gap-4 mb-12" style={{ transitionDelay: '0.3s' }}>
             <Link to="/login">
-              <button
-                className="px-10 py-4 rounded-xl text-sm font-medium tracking-[2px] transition-all duration-300"
-                style={{ background: 'linear-gradient(135deg, #C9A84C, #E8D5A3)', color: '#0A0A0A' }}
-                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 12px 40px rgba(201,168,76,0.3)' }}
-                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
-              >
-                ACCEDER A MI TARJETA
+              <button className="px-10 py-4 text-[11px] uppercase tracking-[0.2em] font-medium transition-colors duration-500"
+                style={{ background: '#C9A84C', color: '#0d0d0d' }}
+                onMouseEnter={e => (e.currentTarget.style.background = '#f0d78c')}
+                onMouseLeave={e => (e.currentTarget.style.background = '#C9A84C')}>
+                Acceder a mi tarjeta
               </button>
             </Link>
             <a href="#tiers">
-              <button
-                className="px-10 py-4 rounded-xl text-sm tracking-[2px] transition-all duration-300"
-                style={{ border: '1px solid rgba(201,168,76,0.3)', color: '#C9A84C', background: 'transparent' }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(201,168,76,0.08)'; e.currentTarget.style.transform = 'translateY(-2px)' }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.transform = 'translateY(0)' }}
-              >
-                VER NIVELES
+              <button className="px-10 py-4 text-[11px] uppercase tracking-[0.2em] border transition-all duration-500"
+                style={{ borderColor: 'rgba(201,168,76,0.4)', color: '#C9A84C' }}
+                onMouseEnter={e => (e.currentTarget.style.background = 'rgba(201,168,76,0.08)')}
+                onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
+                Ver niveles
               </button>
             </a>
           </div>
-        </div>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 reveal" style={{ transitionDelay: '1s' }}>
-          <div className="text-[9px] tracking-[4px]" style={{ color: '#444' }}>SCROLL</div>
-          <div className="w-px h-12 relative overflow-hidden" style={{ background: 'rgba(201,168,76,0.15)' }}>
-            <div className="absolute top-0 left-0 w-full shimmer-line" style={{ height: '100%' }} />
+          <div className="reveal flex items-center gap-12 border-t pt-10" style={{ borderColor: 'rgba(255,255,255,0.1)', transitionDelay: '0.4s' }}>
+            <div>
+              <div className="text-2xl font-light mb-1" style={{ fontFamily: 'Cormorant Garamond, serif' }}>03</div>
+              <div className="text-[10px] uppercase tracking-widest" style={{ color: '#777' }}>Niveles</div>
+            </div>
+            <div>
+              <div className="text-2xl font-light mb-1" style={{ fontFamily: 'Cormorant Garamond, serif' }}>15%</div>
+              <div className="text-[10px] uppercase tracking-widest" style={{ color: '#777' }}>Beneficio Máx</div>
+            </div>
+            <div>
+              <div className="text-2xl font-light mb-1 italic" style={{ fontFamily: 'Cormorant Garamond, serif', color: '#C9A84C' }}>VIP</div>
+              <div className="text-[10px] uppercase tracking-widest" style={{ color: '#777' }}>Estatus</div>
+            </div>
           </div>
         </div>
-      </section>
 
-      {/* ── STATS ── */}
-      <section id="about" className="relative py-20 px-6" style={{ zIndex: 1 }}>
-        <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {STATS.map((s, i) => (
-              <div
-                key={s.label}
-                className={`reveal text-center p-8 rounded-2xl border-glow`}
-                style={{
-                  transitionDelay: `${i * 0.1}s`,
-                  background: '#111',
-                  border: '1px solid rgba(201,168,76,0.15)',
-                }}
-              >
-                <div className="text-4xl font-light mb-2"
-                  style={{ fontFamily: 'Cormorant Garamond, serif', color: '#C9A84C' }}>
-                  {s.value}
-                </div>
-                <div className="text-[9px] tracking-[3px]" style={{ color: '#555' }}>{s.label}</div>
+        {/* Right: floating card */}
+        <div className="w-full md:w-1/2 relative flex justify-center items-center reveal-right">
+          <div className="relative group">
+            <div className="absolute inset-0 rounded-full" style={{ background: 'rgba(201,168,76,0.18)', filter: 'blur(100px)' }} />
+            <div
+              className="relative w-[330px] h-[210px] md:w-[450px] md:h-[280px] rounded-2xl p-8 flex flex-col justify-between shadow-2xl transition-transform duration-700 ease-out group-hover:rotate-0 float-anim"
+              style={{
+                background: 'linear-gradient(135deg, #1a1a1a, #0d0d0d)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                transform: 'rotate(-12deg)',
+              }}
+            >
+              <div className="flex justify-between items-start">
+                <div className="w-12 h-10 rounded-md opacity-80" style={{ background: 'linear-gradient(135deg, #f0d78c, #C9A84C)' }} />
+                <div className="text-xl font-light tracking-tight" style={{ color: '#C9A84C' }}>GM LUXURY</div>
               </div>
-            ))}
+              <div className="mt-auto">
+                <div className="tracking-[0.3em] text-[10px] uppercase mb-3" style={{ color: 'rgba(255,255,255,0.25)' }}>Black Member</div>
+                <div className="text-lg tracking-[0.2em] font-light" style={{ opacity: 0.8 }}>•••• •••• •••• 8892</div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ── TIERS ── */}
-      <section id="tiers" className="relative py-24 px-6" style={{ zIndex: 1 }}>
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <p className="reveal text-[10px] tracking-[5px] mb-4" style={{ color: '#C9A84C' }}>
-              MEMBRESÍA
-            </p>
-            <h2 className="reveal text-5xl font-light" style={{ fontFamily: 'Cormorant Garamond, serif', color: '#E8D5A3', transitionDelay: '0.1s' }}>
+      {/* ── MEMBERSHIP TIERS ── */}
+      <section id="tiers" className="relative py-28 px-8 md:px-20" style={{ background: '#1a1a1a', zIndex: 1 }}>
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-20">
+            <span className="reveal block text-xs tracking-[0.4em] uppercase mb-4" style={{ color: '#C9A84C' }}>Membresía</span>
+            <h2 className="reveal text-5xl font-light" style={{ fontFamily: 'Cormorant Garamond, serif', transitionDelay: '0.1s' }}>
               Tres niveles de privilegio.
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-8">
             {TIERS.map((tier, i) => (
               <div
                 key={tier.id}
-                className="reveal rounded-2xl p-8 transition-all duration-500 group cursor-default"
+                className="reveal group p-10 transition-all duration-500"
                 style={{
-                  transitionDelay: `${i * 0.15}s`,
-                  background: tier.color,
-                  border: `1px solid ${tier.borderColor}`,
-                  position: 'relative',
+                  transitionDelay: `${i * 0.12}s`,
+                  background: tier.featured ? 'linear-gradient(180deg, #1a1a1a, #000)' : '#0d0d0d',
+                  border: tier.featured ? '1px solid #C9A84C' : '1px solid rgba(255,255,255,0.06)',
+                  boxShadow: tier.featured ? '0 0 50px rgba(201,168,76,0.1)' : 'none',
                 }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.transform = 'translateY(-6px)'
-                  e.currentTarget.style.boxShadow = `0 20px 60px ${tier.borderColor}`
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.transform = 'translateY(0)'
-                  e.currentTarget.style.boxShadow = 'none'
-                }}
+                onMouseEnter={e => { if (!tier.featured) e.currentTarget.style.borderColor = 'rgba(201,168,76,0.3)' }}
+                onMouseLeave={e => { if (!tier.featured) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)' }}
               >
-                {tier.featured && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-[9px] tracking-[2px] font-medium"
-                    style={{ background: 'rgba(201,168,76,0.9)', color: '#0A0A0A' }}>
-                    MÁS POPULAR
-                  </div>
-                )}
-                <div className="text-3xl mb-4" style={{ color: '#C9A84C' }}>{tier.icon}</div>
-                <div className="text-[9px] tracking-[3px] mb-1" style={{ color: '#666' }}>{tier.label}</div>
-                <div className="text-2xl font-light mb-1" style={{ fontFamily: 'Cormorant Garamond, serif', color: '#E8D5A3' }}>
+                <div className="flex justify-between items-start mb-12">
+                  <span className="text-[10px] uppercase tracking-widest" style={{ color: tier.featured ? '#f0d78c' : '#777' }}>
+                    {tier.level}
+                  </span>
+                  <span className="text-4xl font-light" style={{ color: tier.featured ? '#f0d78c' : '#C9A84C' }}>
+                    {tier.discount}
+                  </span>
+                </div>
+                <h3 className="text-3xl mb-4 font-light italic" style={{ fontFamily: 'Cormorant Garamond, serif', color: tier.featured ? '#fff' : '#E8D5A3' }}>
                   {tier.name}
-                </div>
-                <div className="text-4xl font-light mb-4" style={{ fontFamily: 'Cormorant Garamond, serif', color: '#C9A84C' }}>
-                  {tier.discount}
-                </div>
-                <p className="text-xs mb-6 leading-relaxed" style={{ color: '#666' }}>{tier.desc}</p>
-                <ul className="space-y-2">
+                </h3>
+                <p className="text-sm leading-relaxed mb-8" style={{ color: tier.featured ? '#cfcfcf' : '#888' }}>
+                  {tier.desc}
+                </p>
+                <ul className="space-y-4 text-xs tracking-wide border-t pt-8" style={{ borderColor: tier.featured ? 'rgba(201,168,76,0.3)' : 'rgba(255,255,255,0.08)', color: tier.featured ? '#eee' : '#999' }}>
                   {tier.benefits.map(b => (
-                    <li key={b} className="flex items-start gap-2 text-xs" style={{ color: '#888' }}>
-                      <span className="mt-1.5 w-1 h-1 rounded-full flex-shrink-0" style={{ background: '#C9A84C' }} />
+                    <li key={b} className="flex items-center gap-3">
+                      <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: '#C9A84C' }} />
                       {b}
                     </li>
                   ))}
                 </ul>
+                {tier.featured && (
+                  <Link to="/login">
+                    <button className="w-full mt-10 py-4 uppercase tracking-widest text-[10px] font-medium transition-colors"
+                      style={{ background: '#C9A84C', color: '#0d0d0d' }}
+                      onMouseEnter={e => (e.currentTarget.style.background = '#f0d78c')}
+                      onMouseLeave={e => (e.currentTarget.style.background = '#C9A84C')}>
+                      Solicitar invitación
+                    </button>
+                  </Link>
+                )}
               </div>
             ))}
           </div>
@@ -227,50 +212,39 @@ export default function LandingPage() {
       </section>
 
       {/* ── BENEFITS SHOWCASE ── */}
-      <section id="benefits" className="relative py-24 px-6" style={{ zIndex: 1 }}>
-        <div className="max-w-5xl mx-auto">
-          <div className="flex flex-col md:flex-row items-center gap-16">
-            <div className="flex-1 reveal-left">
-              <p className="text-[10px] tracking-[5px] mb-4" style={{ color: '#C9A84C' }}>LA TARJETA</p>
-              <h2 className="text-5xl font-light mb-6 leading-tight"
-                style={{ fontFamily: 'Cormorant Garamond, serif', color: '#E8D5A3' }}>
-                Una tarjeta.<br />
-                <span style={{ color: '#C9A84C' }}>Acceso total.</span>
-              </h2>
-              <p className="text-sm leading-relaxed mb-8" style={{ color: '#666' }}>
-                Tu tarjeta GM Luxury es tu llave a un mundo de privilegios.
-                Cada compra, cada visita, cada experiencia suma.
-              </p>
-              <div className="space-y-4">
-                {[
-                  { icon: '◆', text: 'Descuentos permanentes en todas las marcas del grupo' },
-                  { icon: '◆', text: 'Acceso anticipado a colecciones y lanzamientos exclusivos' },
-                  { icon: '◆', text: 'Sala VIP en boutiques participantes (nivel Black)' },
-                  { icon: '◆', text: 'Asesor personal de imagen y moda' },
-                ].map((item, i) => (
-                  <div key={i} className="flex items-start gap-3 reveal" style={{ transitionDelay: `${i * 0.1}s` }}>
-                    <span className="text-xs mt-1" style={{ color: '#C9A84C' }}>{item.icon}</span>
-                    <span className="text-sm" style={{ color: '#888' }}>{item.text}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Decorative card stack */}
-            <div className="flex-1 reveal-right flex justify-center">
-              <div className="relative w-64 h-64">
-                <div className="absolute inset-0 rounded-2xl"
-                  style={{ background: 'rgba(201,168,76,0.05)', border: '1px solid rgba(201,168,76,0.1)', transform: 'rotate(6deg) translateY(8px)' }} />
-                <div className="absolute inset-0 rounded-2xl"
-                  style={{ background: 'rgba(201,168,76,0.08)', border: '1px solid rgba(201,168,76,0.15)', transform: 'rotate(3deg) translateY(4px)' }} />
-                <div className="absolute inset-0 rounded-2xl flex flex-col justify-center items-center gap-3 float-anim"
-                  style={{ background: 'linear-gradient(135deg, #1a1a1a, #222, #1a1205)', border: '1px solid rgba(201,168,76,0.4)' }}>
-                  <div className="text-[10px] tracking-[4px]" style={{ color: '#C9A84C' }}>GM LUXURY</div>
-                  <div className="text-4xl font-light" style={{ fontFamily: 'Cormorant Garamond, serif', color: '#E8D5A3' }}>
-                    Black <span style={{ color: '#C9A84C' }}>✦</span>
-                  </div>
-                  <div className="text-xs tracking-[3px]" style={{ color: '#666' }}>REWARDS CARD</div>
+      <section id="benefits" className="relative py-28 px-8 md:px-20" style={{ zIndex: 1 }}>
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-16">
+          <div className="flex-1 reveal-left">
+            <span className="block text-xs tracking-[0.4em] uppercase mb-4" style={{ color: '#C9A84C' }}>La Tarjeta</span>
+            <h2 className="text-5xl font-light mb-6 leading-tight" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+              Una tarjeta. <br />
+              <span className="italic" style={{ color: '#C9A84C' }}>Acceso total.</span>
+            </h2>
+            <p className="text-sm leading-relaxed mb-10 max-w-md" style={{ color: '#888' }}>
+              Tu tarjeta GM Luxury es tu llave a un mundo de privilegios.
+              Cada compra, cada visita, cada experiencia suma.
+            </p>
+            <div className="space-y-5">
+              {SHOWCASE.map((item, i) => (
+                <div key={i} className="reveal flex items-start gap-4" style={{ transitionDelay: `${i * 0.1}s` }}>
+                  <span className="text-xs mt-1" style={{ color: '#C9A84C' }}>◆</span>
+                  <span className="text-sm" style={{ color: '#aaa' }}>{item}</span>
                 </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex-1 reveal-right flex justify-center">
+            <div className="relative w-72 h-72">
+              <div className="absolute inset-0 rounded-2xl" style={{ background: 'rgba(201,168,76,0.05)', border: '1px solid rgba(201,168,76,0.1)', transform: 'rotate(6deg) translateY(8px)' }} />
+              <div className="absolute inset-0 rounded-2xl" style={{ background: 'rgba(201,168,76,0.08)', border: '1px solid rgba(201,168,76,0.15)', transform: 'rotate(3deg) translateY(4px)' }} />
+              <div className="absolute inset-0 rounded-2xl flex flex-col justify-center items-center gap-3 float-anim"
+                style={{ background: 'linear-gradient(135deg, #1a1a1a, #0d0d0d)', border: '1px solid rgba(201,168,76,0.4)' }}>
+                <div className="text-[10px] tracking-[0.4em] uppercase" style={{ color: '#C9A84C' }}>GM Luxury</div>
+                <div className="text-4xl font-light" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+                  Black <span style={{ color: '#C9A84C' }}>✦</span>
+                </div>
+                <div className="text-[10px] tracking-[0.3em] uppercase" style={{ color: '#777' }}>Rewards Card</div>
               </div>
             </div>
           </div>
@@ -278,36 +252,31 @@ export default function LandingPage() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="relative py-24 px-6 text-center" style={{ zIndex: 1 }}>
-        <div className="max-w-2xl mx-auto">
-          <div className="reveal p-16 rounded-3xl"
-            style={{ background: 'rgba(201,168,76,0.05)', border: '1px solid rgba(201,168,76,0.2)' }}>
-            <p className="text-[10px] tracking-[5px] mb-4" style={{ color: '#C9A84C' }}>¿YA ERES MIEMBRO?</p>
-            <h2 className="text-4xl font-light mb-4" style={{ fontFamily: 'Cormorant Garamond, serif', color: '#E8D5A3' }}>
-              Accede a tu cuenta.
-            </h2>
-            <p className="text-sm mb-8" style={{ color: '#666' }}>
-              Ingresa tu código de tarjeta y PIN para ver tus beneficios activos.
-            </p>
-            <Link to="/login">
-              <button
-                className="px-12 py-4 rounded-xl text-sm font-medium tracking-[2px] transition-all duration-300"
-                style={{ background: 'linear-gradient(135deg, #C9A84C, #E8D5A3)', color: '#0A0A0A' }}
-                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 12px 40px rgba(201,168,76,0.3)' }}
-                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
-              >
-                INGRESAR AHORA
-              </button>
-            </Link>
-          </div>
+      <section className="relative py-28 px-8" style={{ zIndex: 1 }}>
+        <div className="reveal max-w-3xl mx-auto text-center p-16 rounded-2xl"
+          style={{ background: 'linear-gradient(180deg, #1a1a1a, #0d0d0d)', border: '1px solid rgba(201,168,76,0.2)' }}>
+          <span className="block text-xs tracking-[0.4em] uppercase mb-4" style={{ color: '#C9A84C' }}>¿Ya eres miembro?</span>
+          <h2 className="text-4xl font-light mb-4 italic" style={{ fontFamily: 'Cormorant Garamond, serif' }}>
+            Accede a tu cuenta.
+          </h2>
+          <p className="text-sm mb-10" style={{ color: '#888' }}>
+            Ingresa tu código de tarjeta y PIN para ver tus beneficios activos.
+          </p>
+          <Link to="/login">
+            <button className="px-12 py-4 text-[11px] uppercase tracking-[0.2em] font-medium transition-colors duration-500"
+              style={{ background: '#C9A84C', color: '#0d0d0d' }}
+              onMouseEnter={e => (e.currentTarget.style.background = '#f0d78c')}
+              onMouseLeave={e => (e.currentTarget.style.background = '#C9A84C')}>
+              Ingresar ahora
+            </button>
+          </Link>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="relative border-t py-8 px-6 text-center" style={{ borderColor: 'rgba(201,168,76,0.1)', zIndex: 1 }}>
-        <p className="text-[10px] tracking-[3px]" style={{ color: '#333' }}>
-          © 2024 GM LUXURY · LUXURY BRANDS HUB · TODOS LOS DERECHOS RESERVADOS
-        </p>
+      {/* ── FOOTER ── */}
+      <footer className="relative py-12 px-8 md:px-20 border-t flex flex-col md:flex-row justify-between items-center gap-6" style={{ borderColor: 'rgba(255,255,255,0.05)', zIndex: 1 }}>
+        <div className="text-[10px] uppercase tracking-widest" style={{ color: '#555' }}>© 2024 GM Luxury · Luxury Brands Hub</div>
+        <div className="text-[10px] uppercase tracking-widest" style={{ color: '#555' }}>Todos los derechos reservados</div>
       </footer>
     </div>
   )
