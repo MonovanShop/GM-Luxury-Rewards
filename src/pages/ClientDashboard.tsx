@@ -105,35 +105,64 @@ export default function ClientDashboard() {
                 style={{ background: '#111', border: '1px solid rgba(201,168,76,0.15)' }}>
                 <p className="text-[9px] tracking-[3px] mb-2" style={{ color: '#555' }}>DESCUENTO ACTIVO</p>
                 <p className="text-4xl font-light" style={{ fontFamily: 'Cormorant Garamond, serif', color: '#C9A84C' }}>
-                  {info.discount}
+                  {discountLabel}
                 </p>
-                <p className="text-[10px] mt-1" style={{ color: '#555' }}>en todas las compras</p>
+                <p className="text-[10px] mt-1" style={{ color: '#555' }}>
+                  {progress.discount > 0 ? 'en todas las compras' : 'sin descuento aún'}
+                </p>
               </div>
               <div className="p-6 rounded-2xl"
                 style={{ background: '#111', border: '1px solid rgba(201,168,76,0.15)' }}>
                 <p className="text-[9px] tracking-[3px] mb-2" style={{ color: '#555' }}>NIVEL ACTUAL</p>
                 <p className="text-4xl font-light" style={{ fontFamily: 'Cormorant Garamond, serif', color: '#C9A84C' }}>
-                  {TIER_ICONS[currentClient.tier]}
+                  {activeTier ? TIER_ICONS[activeTier] : '·'}
                 </p>
-                <p className="text-[10px] mt-1 capitalize" style={{ color: '#E8D5A3' }}>{currentClient.tier}</p>
+                <p className="text-[10px] mt-1 capitalize" style={{ color: '#E8D5A3' }}>
+                  {activeTier ?? 'Sin nivel'}
+                </p>
               </div>
               <div className="p-6 rounded-2xl"
                 style={{ background: '#111', border: '1px solid rgba(201,168,76,0.15)' }}>
-                <p className="text-[9px] tracking-[3px] mb-2" style={{ color: '#555' }}>BENEFICIO ESPECIAL</p>
+                <p className="text-[9px] tracking-[3px] mb-2" style={{ color: '#555' }}>COMPRAS</p>
                 <p className="text-3xl font-light" style={{ fontFamily: 'Cormorant Garamond, serif', color: '#C9A84C' }}>
-                  {currentClient.benefit}
+                  {progress.purchases}
                 </p>
-                <p className="text-[10px] mt-1" style={{ color: '#555' }}>privilegio activo</p>
+                <p className="text-[10px] mt-1" style={{ color: '#555' }}>compras realizadas</p>
               </div>
               <div className="p-6 rounded-2xl"
                 style={{ background: '#111', border: '1px solid rgba(201,168,76,0.15)' }}>
                 <p className="text-[9px] tracking-[3px] mb-2" style={{ color: '#555' }}>SIGUIENTE NIVEL</p>
-                <p className="text-3xl font-light" style={{ fontFamily: 'Cormorant Garamond, serif', color: '#C9A84C' }}>
-                  {info.next}
+                <p className="text-3xl font-light capitalize" style={{ fontFamily: 'Cormorant Garamond, serif', color: '#C9A84C' }}>
+                  {progress.nextTier ?? '—'}
                 </p>
-                <p className="text-[10px] mt-1" style={{ color: '#555' }}>{info.nextDesc.slice(0, 20)}…</p>
+                <p className="text-[10px] mt-1" style={{ color: '#555' }}>
+                  {progress.nextTier ? `faltan ${progress.remaining} compras` : 'nivel máximo'}
+                </p>
               </div>
             </div>
+
+            {/* Progress bar al siguiente nivel */}
+            {progress.nextTier && (
+              <div className="p-5 rounded-2xl" style={{ background: '#111', border: '1px solid rgba(201,168,76,0.15)' }}>
+                <div className="flex justify-between items-center mb-3">
+                  <p className="text-[9px] tracking-[3px]" style={{ color: '#555' }}>
+                    PROGRESO A <span style={{ color: '#C9A84C' }} className="capitalize">{progress.nextTier}</span>
+                  </p>
+                  <p className="text-[10px]" style={{ color: '#888' }}>
+                    {progress.purchases} / {progress.nextThreshold}
+                  </p>
+                </div>
+                <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(201,168,76,0.1)' }}>
+                  <div
+                    className="h-full rounded-full transition-all duration-700"
+                    style={{ width: `${progress.toNextPercent}%`, background: 'linear-gradient(90deg, #C9A84C, #E8D5A3)' }}
+                  />
+                </div>
+                <p className="text-[10px] mt-3" style={{ color: '#555' }}>
+                  Completa {progress.remaining} compra{progress.remaining === 1 ? '' : 's'} más para desbloquear tu siguiente descuento.
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
