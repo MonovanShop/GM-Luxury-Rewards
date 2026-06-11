@@ -1,4 +1,4 @@
-import { Client } from '../hooks/useAuth'
+import { Client, getProgress } from '../hooks/useAuth'
 
 const TIER_LABELS: Record<string, string> = {
   classic: 'Classic Rewards',
@@ -18,7 +18,10 @@ interface Props {
 }
 
 export default function LoyaltyCard({ client, animate = true }: Props) {
-  const tierLabel = TIER_LABELS[client.tier] || 'Black Rewards'
+  const progress = getProgress(client.purchases)
+  const displayTier = progress.earnedTier ?? 'classic'
+  const benefitLabel = progress.discount > 0 ? `${progress.discount}%` : '—'
+  const tierLabel = TIER_LABELS[displayTier] || 'Black Rewards'
   const [name1, name2] = tierLabel.split(' ')
 
   return (
@@ -28,7 +31,7 @@ export default function LoyaltyCard({ client, animate = true }: Props) {
         {/* FRONT */}
         <div className="card-front w-full h-full rounded-2xl p-8 flex flex-col justify-between border-glow"
           style={{
-            background: TIER_COLORS[client.tier],
+            background: TIER_COLORS[displayTier],
             border: '1px solid rgba(201,168,76,0.35)',
             position: 'relative',
             overflow: 'hidden',
@@ -77,7 +80,7 @@ export default function LoyaltyCard({ client, animate = true }: Props) {
             <div className="px-3 py-2 rounded-lg text-center"
               style={{ background: 'rgba(201,168,76,0.12)', border: '1px solid rgba(201,168,76,0.3)' }}>
               <div className="text-[7px] tracking-[2px] mb-0.5" style={{ color: '#C9A84C' }}>BENEFIT</div>
-              <div className="text-sm font-medium" style={{ color: '#E8D5A3' }}>{client.benefit}</div>
+              <div className="text-sm font-medium" style={{ color: '#E8D5A3' }}>{benefitLabel}</div>
             </div>
           </div>
         </div>
@@ -92,8 +95,8 @@ export default function LoyaltyCard({ client, animate = true }: Props) {
           <div className="space-y-3">
             <div className="text-[9px] tracking-[3px]" style={{ color: '#555' }}>INFORMACIÓN DEL TITULAR</div>
             <div className="text-sm" style={{ color: '#888' }}>Nombre: <span style={{ color: '#E8D5A3' }}>{client.name}</span></div>
-            <div className="text-sm" style={{ color: '#888' }}>Nivel: <span style={{ color: '#C9A84C', textTransform: 'capitalize' }}>{client.tier}</span></div>
-            <div className="text-sm" style={{ color: '#888' }}>Descuento activo: <span style={{ color: '#E8D5A3' }}>{client.benefit}</span></div>
+            <div className="text-sm" style={{ color: '#888' }}>Nivel: <span style={{ color: '#C9A84C', textTransform: 'capitalize' }}>{progress.earnedTier ?? 'Sin nivel'}</span></div>
+            <div className="text-sm" style={{ color: '#888' }}>Descuento activo: <span style={{ color: '#E8D5A3' }}>{benefitLabel}</span></div>
             <div className="text-sm" style={{ color: '#888' }}>Miembro desde: <span style={{ color: '#E8D5A3' }}>{client.joinDate}</span></div>
           </div>
           <div className="text-[8px] tracking-[2px] text-center" style={{ color: '#333' }}>

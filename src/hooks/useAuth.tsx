@@ -30,6 +30,45 @@ const TIER_DEFAULTS = {
   black: { benefit: '15%', label: 'Black' },
 }
 
+// Hitos de lealtad: el descuento se desbloquea SOLO al completar las compras del nivel
+export const MILESTONES = [
+  { tier: 'classic' as const, threshold: 5, discount: 5 },
+  { tier: 'elite' as const, threshold: 10, discount: 10 },
+  { tier: 'black' as const, threshold: 15, discount: 15 },
+]
+
+export interface Progress {
+  purchases: number
+  earnedTier: 'classic' | 'elite' | 'black' | null
+  discount: number          // descuento desbloqueado (0 si aún no completa el primer hito)
+  nextTier: 'classic' | 'elite' | 'black' | null
+  nextThreshold: number | null
+  remaining: number         // compras que faltan para el siguiente hito
+  toNextPercent: number     // progreso (0-100) hacia el siguiente hito
+}
+
+export function getProgress(purchases: number): Progress {
+  const earned = [...MILESTONES].reverse().find(m => purchases >= m.threshold) || null
+  const next = MILESTONES.find(m => purchases < m.threshold) || null
+
+  const prevThreshold = earned ? earned.threshold : 0
+  const remaining = next ? next.threshold - purchases : 0
+  const span = next ? next.threshold - prevThreshold : 1
+  const toNextPercent = next
+    ? Math.min(100, Math.round(((purchases - prevThreshold) / span) * 100))
+    : 100
+
+  return {
+    purchases,
+    earnedTier: earned ? earned.tier : null,
+    discount: earned ? earned.discount : 0,
+    nextTier: next ? next.tier : null,
+    nextThreshold: next ? next.threshold : null,
+    remaining,
+    toNextPercent,
+  }
+}
+
 const INITIAL_CLIENTS: Client[] = [
   {
     id: '1',

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Particles from '../components/Particles'
 import LoyaltyCard from '../components/LoyaltyCard'
-import { useAuth } from '../hooks/useAuth'
+import { useAuth, getProgress, MILESTONES } from '../hooks/useAuth'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 
 const TIER_INFO = {
@@ -49,7 +49,10 @@ export default function ClientDashboard() {
 
   if (!currentClient) return null
 
-  const info = TIER_INFO[currentClient.tier]
+  const progress = getProgress(currentClient.purchases)
+  const activeTier = progress.earnedTier
+  const info = TIER_INFO[activeTier ?? 'classic']
+  const discountLabel = progress.discount > 0 ? `${progress.discount}%` : '—'
   const tiers = ['classic', 'elite', 'black'] as const
 
   return (
@@ -102,35 +105,64 @@ export default function ClientDashboard() {
                 style={{ background: '#111', border: '1px solid rgba(201,168,76,0.15)' }}>
                 <p className="text-[9px] tracking-[3px] mb-2" style={{ color: '#555' }}>DESCUENTO ACTIVO</p>
                 <p className="text-4xl font-light" style={{ fontFamily: 'Cormorant Garamond, serif', color: '#C9A84C' }}>
-                  {info.discount}
+                  {discountLabel}
                 </p>
-                <p className="text-[10px] mt-1" style={{ color: '#555' }}>en todas las compras</p>
+                <p className="text-[10px] mt-1" style={{ color: '#555' }}>
+                  {progress.discount > 0 ? 'en todas las compras' : 'sin descuento aún'}
+                </p>
               </div>
               <div className="p-6 rounded-2xl"
                 style={{ background: '#111', border: '1px solid rgba(201,168,76,0.15)' }}>
                 <p className="text-[9px] tracking-[3px] mb-2" style={{ color: '#555' }}>NIVEL ACTUAL</p>
                 <p className="text-4xl font-light" style={{ fontFamily: 'Cormorant Garamond, serif', color: '#C9A84C' }}>
-                  {TIER_ICONS[currentClient.tier]}
+                  {activeTier ? TIER_ICONS[activeTier] : '·'}
                 </p>
-                <p className="text-[10px] mt-1 capitalize" style={{ color: '#E8D5A3' }}>{currentClient.tier}</p>
+                <p className="text-[10px] mt-1 capitalize" style={{ color: '#E8D5A3' }}>
+                  {activeTier ?? 'Sin nivel'}
+                </p>
               </div>
               <div className="p-6 rounded-2xl"
                 style={{ background: '#111', border: '1px solid rgba(201,168,76,0.15)' }}>
-                <p className="text-[9px] tracking-[3px] mb-2" style={{ color: '#555' }}>BENEFICIO ESPECIAL</p>
+                <p className="text-[9px] tracking-[3px] mb-2" style={{ color: '#555' }}>COMPRAS</p>
                 <p className="text-3xl font-light" style={{ fontFamily: 'Cormorant Garamond, serif', color: '#C9A84C' }}>
-                  {currentClient.benefit}
+                  {progress.purchases}
                 </p>
-                <p className="text-[10px] mt-1" style={{ color: '#555' }}>privilegio activo</p>
+                <p className="text-[10px] mt-1" style={{ color: '#555' }}>compras realizadas</p>
               </div>
               <div className="p-6 rounded-2xl"
                 style={{ background: '#111', border: '1px solid rgba(201,168,76,0.15)' }}>
                 <p className="text-[9px] tracking-[3px] mb-2" style={{ color: '#555' }}>SIGUIENTE NIVEL</p>
-                <p className="text-3xl font-light" style={{ fontFamily: 'Cormorant Garamond, serif', color: '#C9A84C' }}>
-                  {info.next}
+                <p className="text-3xl font-light capitalize" style={{ fontFamily: 'Cormorant Garamond, serif', color: '#C9A84C' }}>
+                  {progress.nextTier ?? '—'}
                 </p>
-                <p className="text-[10px] mt-1" style={{ color: '#555' }}>{info.nextDesc.slice(0, 20)}…</p>
+                <p className="text-[10px] mt-1" style={{ color: '#555' }}>
+                  {progress.nextTier ? `faltan ${progress.remaining} compras` : 'nivel máximo'}
+                </p>
               </div>
             </div>
+
+            {/* Progress bar al siguiente nivel */}
+            {progress.nextTier && (
+              <div className="p-5 rounded-2xl" style={{ background: '#111', border: '1px solid rgba(201,168,76,0.15)' }}>
+                <div className="flex justify-between items-center mb-3">
+                  <p className="text-[9px] tracking-[3px]" style={{ color: '#555' }}>
+                    PROGRESO A <span style={{ color: '#C9A84C' }} className="capitalize">{progress.nextTier}</span>
+                  </p>
+                  <p className="text-[10px]" style={{ color: '#888' }}>
+                    {progress.purchases} / {progress.nextThreshold}
+                  </p>
+                </div>
+                <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(201,168,76,0.1)' }}>
+                  <div
+                    className="h-full rounded-full transition-all duration-700"
+                    style={{ width: `${progress.toNextPercent}%`, background: 'linear-gradient(90deg, #C9A84C, #E8D5A3)' }}
+                  />
+                </div>
+                <p className="text-[10px] mt-3" style={{ color: '#555' }}>
+                  Completa {progress.remaining} compra{progress.remaining === 1 ? '' : 's'} más para desbloquear tu siguiente descuento.
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
@@ -139,7 +171,9 @@ export default function ClientDashboard() {
           <p className="text-[10px] tracking-[4px] mb-6 reveal" style={{ color: '#555' }}>NIVELES DE MEMBRESÍA</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {tiers.map((tier, i) => {
-              const isActive = tier === currentClient.tier
+              const milestone = MILESTONES.find(m => m.tier === tier)!
+              const unlocked = currentClient.purchases >= milestone.threshold
+              const isCurrent = tier === activeTier
               const ti = TIER_INFO[tier]
               return (
                 <div
@@ -147,26 +181,32 @@ export default function ClientDashboard() {
                   className="reveal p-6 rounded-2xl transition-all duration-300 relative"
                   style={{
                     transitionDelay: `${i * 0.1}s`,
-                    background: isActive ? ti.color : '#111',
-                    border: `1px solid ${isActive ? ti.border : 'rgba(201,168,76,0.1)'}`,
+                    background: isCurrent ? ti.color : '#111',
+                    border: `1px solid ${isCurrent ? ti.border : 'rgba(201,168,76,0.1)'}`,
+                    opacity: unlocked ? 1 : 0.55,
                   }}
                 >
-                  {isActive && (
-                    <span className="absolute top-3 right-3 text-[8px] tracking-[2px] px-2 py-1 rounded-full pulse-gold"
-                      style={{ background: 'rgba(201,168,76,0.2)', color: '#C9A84C', border: '1px solid rgba(201,168,76,0.3)' }}>
-                      ACTIVO
-                    </span>
-                  )}
-                  <div className="text-2xl mb-2" style={{ color: isActive ? '#C9A84C' : '#444' }}>
-                    {TIER_ICONS[tier]}
+                  <span className="absolute top-3 right-3 text-[8px] tracking-[2px] px-2 py-1 rounded-full"
+                    style={{
+                      background: unlocked ? 'rgba(201,168,76,0.2)' : 'rgba(255,255,255,0.04)',
+                      color: unlocked ? '#C9A84C' : '#555',
+                      border: `1px solid ${unlocked ? 'rgba(201,168,76,0.3)' : 'rgba(255,255,255,0.08)'}`,
+                    }}>
+                    {isCurrent ? 'ACTIVO' : unlocked ? 'LOGRADO' : `${milestone.threshold} COMPRAS`}
+                  </span>
+                  <div className="text-2xl mb-2" style={{ color: unlocked ? '#C9A84C' : '#444' }}>
+                    {unlocked ? TIER_ICONS[tier] : '🔒'}
                   </div>
                   <div className="text-lg font-light capitalize mb-1"
-                    style={{ fontFamily: 'Cormorant Garamond, serif', color: isActive ? '#E8D5A3' : '#666' }}>
+                    style={{ fontFamily: 'Cormorant Garamond, serif', color: unlocked ? '#E8D5A3' : '#666' }}>
                     {tier}
                   </div>
                   <div className="text-2xl font-light"
-                    style={{ fontFamily: 'Cormorant Garamond, serif', color: isActive ? '#C9A84C' : '#444' }}>
-                    {TIER_INFO[tier].discount}
+                    style={{ fontFamily: 'Cormorant Garamond, serif', color: unlocked ? '#C9A84C' : '#444' }}>
+                    {ti.discount}
+                  </div>
+                  <div className="text-[10px] mt-1" style={{ color: '#555' }}>
+                    {unlocked ? 'desbloqueado' : `completa ${milestone.threshold} compras`}
                   </div>
                 </div>
               )
@@ -176,25 +216,37 @@ export default function ClientDashboard() {
 
         {/* Benefits */}
         <div className="reveal">
-          <p className="text-[10px] tracking-[4px] mb-6" style={{ color: '#555' }}>TUS BENEFICIOS ACTIVOS</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {info.benefits.map((b, i) => (
-              <div
-                key={b}
-                className="reveal flex items-center gap-4 px-5 py-4 rounded-xl"
-                style={{
-                  transitionDelay: `${i * 0.07}s`,
-                  background: '#111',
-                  border: '1px solid rgba(201,168,76,0.1)',
-                }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(201,168,76,0.25)'; e.currentTarget.style.transform = 'translateX(4px)' }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(201,168,76,0.1)'; e.currentTarget.style.transform = 'translateX(0)' }}
-              >
-                <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: '#C9A84C' }} />
-                <span className="text-sm" style={{ color: '#888' }}>{b}</span>
-              </div>
-            ))}
-          </div>
+          <p className="text-[10px] tracking-[4px] mb-6" style={{ color: '#555' }}>
+            {activeTier ? 'TUS BENEFICIOS ACTIVOS' : 'BENEFICIOS POR DESBLOQUEAR'}
+          </p>
+          {activeTier ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {info.benefits.map((b, i) => (
+                <div
+                  key={b}
+                  className="reveal flex items-center gap-4 px-5 py-4 rounded-xl"
+                  style={{
+                    transitionDelay: `${i * 0.07}s`,
+                    background: '#111',
+                    border: '1px solid rgba(201,168,76,0.1)',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(201,168,76,0.25)'; e.currentTarget.style.transform = 'translateX(4px)' }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(201,168,76,0.1)'; e.currentTarget.style.transform = 'translateX(0)' }}
+                >
+                  <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: '#C9A84C' }} />
+                  <span className="text-sm" style={{ color: '#888' }}>{b}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="px-6 py-8 rounded-2xl text-center"
+              style={{ background: '#111', border: '1px dashed rgba(201,168,76,0.15)' }}>
+              <p className="text-sm" style={{ color: '#888' }}>
+                Realiza <span style={{ color: '#C9A84C' }}>{progress.remaining}</span> compra{progress.remaining === 1 ? '' : 's'} más
+                para desbloquear tu nivel <span className="capitalize" style={{ color: '#C9A84C' }}>{progress.nextTier}</span> y sus beneficios.
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>
