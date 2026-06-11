@@ -18,78 +18,60 @@ export default function Navbar() {
 
   return (
     <nav
-      className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
+      className="fixed top-0 left-0 right-0 z-50 transition-all duration-500 border-b"
       style={{
-        background: scrolled ? 'rgba(10,10,10,0.97)' : 'transparent',
+        background: scrolled ? 'rgba(13,13,13,0.92)' : 'transparent',
         backdropFilter: scrolled ? 'blur(20px)' : 'none',
-        borderBottom: scrolled ? '1px solid rgba(201,168,76,0.15)' : '1px solid transparent',
-        padding: scrolled ? '14px 40px' : '22px 40px',
+        borderColor: scrolled ? 'rgba(201,168,76,0.15)' : 'rgba(255,255,255,0.05)',
+        padding: scrolled ? '14px 0' : '22px 0',
       }}
     >
-      <div className="flex items-center justify-between max-w-7xl mx-auto">
+      <div className="flex items-center justify-between max-w-7xl mx-auto px-8">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-3 group">
-          <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center text-xl font-serif transition-transform group-hover:scale-105"
-            style={{ background: 'linear-gradient(135deg, #C9A84C, #E8D5A3)' }}
-          >
-            ✦
-          </div>
-          <div>
-            <div className="text-[13px] font-medium tracking-[3px] text-gold-light" style={{color:'#E8D5A3'}}>
-              GM LUXURY
-            </div>
-            <div className="text-[9px] tracking-[4px]" style={{color:'#C9A84C'}}>
-              REWARDS CARD
-            </div>
-          </div>
+        <Link to="/" className="flex flex-col group">
+          <span className="text-sm tracking-[0.3em] font-medium uppercase" style={{ fontFamily: 'Cormorant Garamond, serif', color: '#E8D5A3' }}>
+            GM Luxury
+          </span>
+          <span className="text-[9px] tracking-[0.4em] uppercase mt-0.5" style={{ color: '#C9A84C' }}>
+            Rewards Card
+          </span>
         </Link>
 
         {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-8 text-[10px] tracking-[0.2em] uppercase">
           {isLanding && (
             <>
-              <a href="#about" className="text-xs tracking-[2px] transition-colors" style={{color:'#888'}}
-                onMouseEnter={e => (e.currentTarget.style.color = '#E8D5A3')}
+              <a href="#tiers" className="transition-colors" style={{ color: '#888' }}
+                onMouseEnter={e => (e.currentTarget.style.color = '#C9A84C')}
                 onMouseLeave={e => (e.currentTarget.style.color = '#888')}>
-                ACERCA
+                Niveles
               </a>
-              <a href="#tiers" className="text-xs tracking-[2px] transition-colors" style={{color:'#888'}}
-                onMouseEnter={e => (e.currentTarget.style.color = '#E8D5A3')}
+              <a href="#benefits" className="transition-colors" style={{ color: '#888' }}
+                onMouseEnter={e => (e.currentTarget.style.color = '#C9A84C')}
                 onMouseLeave={e => (e.currentTarget.style.color = '#888')}>
-                NIVELES
-              </a>
-              <a href="#benefits" className="text-xs tracking-[2px] transition-colors" style={{color:'#888'}}
-                onMouseEnter={e => (e.currentTarget.style.color = '#E8D5A3')}
-                onMouseLeave={e => (e.currentTarget.style.color = '#888')}>
-                BENEFICIOS
+                Beneficios
               </a>
             </>
           )}
 
           {currentClient ? (
-            <div className="flex items-center gap-4">
-              <Link to="/dashboard">
-                <button className="text-xs tracking-[2px] px-5 py-2 rounded-lg transition-all border"
-                  style={{color:'#C9A84C', borderColor:'rgba(201,168,76,0.3)', background:'transparent'}}
-                  onMouseEnter={e => { e.currentTarget.style.background = 'rgba(201,168,76,0.1)' }}
-                  onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}>
-                  MI TARJETA
-                </button>
+            <div className="flex items-center gap-6">
+              <Link to="/dashboard" className="transition-colors" style={{ color: '#C9A84C' }}>
+                Mi Tarjeta
               </Link>
-              <button onClick={logoutClient} className="text-xs tracking-[2px]" style={{color:'#555'}}>
-                SALIR
+              <button onClick={logoutClient} className="transition-colors" style={{ color: '#555' }}>
+                Salir
               </button>
             </div>
           ) : (
             <Link to="/login">
               <button
-                className="text-xs tracking-[2px] px-6 py-2.5 rounded-lg font-medium transition-all"
-                style={{ background: 'linear-gradient(135deg, #C9A84C, #E8D5A3)', color: '#0A0A0A' }}
-                onMouseEnter={e => { e.currentTarget.style.opacity = '0.88' }}
-                onMouseLeave={e => { e.currentTarget.style.opacity = '1' }}
+                className="px-6 py-2 border transition-all duration-500"
+                style={{ borderColor: '#C9A84C', color: '#C9A84C' }}
+                onMouseEnter={e => { e.currentTarget.style.background = '#C9A84C'; e.currentTarget.style.color = '#0d0d0d' }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#C9A84C' }}
               >
-                ACCEDER
+                Acceder
               </button>
             </Link>
           )}
@@ -109,16 +91,16 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden mt-4 pb-4 border-t" style={{ borderColor: 'rgba(201,168,76,0.15)' }}>
-          <div className="flex flex-col gap-4 pt-4 px-2">
+        <div className="md:hidden mt-4 pb-4 border-t mx-8" style={{ borderColor: 'rgba(201,168,76,0.15)' }}>
+          <div className="flex flex-col gap-4 pt-4 text-[11px] tracking-[0.2em] uppercase">
             {isLanding && <>
-              <a href="#tiers" className="text-xs tracking-[2px]" style={{color:'#888'}} onClick={() => setMenuOpen(false)}>NIVELES</a>
-              <a href="#benefits" className="text-xs tracking-[2px]" style={{color:'#888'}} onClick={() => setMenuOpen(false)}>BENEFICIOS</a>
+              <a href="#tiers" style={{ color: '#888' }} onClick={() => setMenuOpen(false)}>Niveles</a>
+              <a href="#benefits" style={{ color: '#888' }} onClick={() => setMenuOpen(false)}>Beneficios</a>
             </>}
             <Link to="/login" onClick={() => setMenuOpen(false)}>
-              <button className="w-full text-xs tracking-[2px] px-6 py-3 rounded-lg font-medium"
-                style={{ background: 'linear-gradient(135deg, #C9A84C, #E8D5A3)', color: '#0A0A0A' }}>
-                ACCEDER
+              <button className="w-full px-6 py-3 border"
+                style={{ borderColor: '#C9A84C', color: '#C9A84C' }}>
+                Acceder
               </button>
             </Link>
           </div>
