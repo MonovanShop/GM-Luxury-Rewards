@@ -216,25 +216,37 @@ export default function ClientDashboard() {
 
         {/* Benefits */}
         <div className="reveal">
-          <p className="text-[10px] tracking-[4px] mb-6" style={{ color: '#555' }}>TUS BENEFICIOS ACTIVOS</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {info.benefits.map((b, i) => (
-              <div
-                key={b}
-                className="reveal flex items-center gap-4 px-5 py-4 rounded-xl"
-                style={{
-                  transitionDelay: `${i * 0.07}s`,
-                  background: '#111',
-                  border: '1px solid rgba(201,168,76,0.1)',
-                }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(201,168,76,0.25)'; e.currentTarget.style.transform = 'translateX(4px)' }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(201,168,76,0.1)'; e.currentTarget.style.transform = 'translateX(0)' }}
-              >
-                <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: '#C9A84C' }} />
-                <span className="text-sm" style={{ color: '#888' }}>{b}</span>
-              </div>
-            ))}
-          </div>
+          <p className="text-[10px] tracking-[4px] mb-6" style={{ color: '#555' }}>
+            {activeTier ? 'TUS BENEFICIOS ACTIVOS' : 'BENEFICIOS POR DESBLOQUEAR'}
+          </p>
+          {activeTier ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {info.benefits.map((b, i) => (
+                <div
+                  key={b}
+                  className="reveal flex items-center gap-4 px-5 py-4 rounded-xl"
+                  style={{
+                    transitionDelay: `${i * 0.07}s`,
+                    background: '#111',
+                    border: '1px solid rgba(201,168,76,0.1)',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(201,168,76,0.25)'; e.currentTarget.style.transform = 'translateX(4px)' }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(201,168,76,0.1)'; e.currentTarget.style.transform = 'translateX(0)' }}
+                >
+                  <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: '#C9A84C' }} />
+                  <span className="text-sm" style={{ color: '#888' }}>{b}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="px-6 py-8 rounded-2xl text-center"
+              style={{ background: '#111', border: '1px dashed rgba(201,168,76,0.15)' }}>
+              <p className="text-sm" style={{ color: '#888' }}>
+                Realiza <span style={{ color: '#C9A84C' }}>{progress.remaining}</span> compra{progress.remaining === 1 ? '' : 's'} más
+                para desbloquear tu nivel <span className="capitalize" style={{ color: '#C9A84C' }}>{progress.nextTier}</span> y sus beneficios.
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>
